@@ -26,8 +26,8 @@ export default {
         <!-- Jumbotron Section -->
         <section class="jumbotron">
             <div class="container">
-                <h1>Benvenuto nel nostro sito di appartamenti</h1>
-                <p>Trova l'appartamento perfetto per il tuo soggiorno</p>
+                <h1>LaraBnB</h1>
+                <p>Trova l'appartamento dei tuoi sogni</p>
             </div>
         </section>
 
