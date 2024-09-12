@@ -73,6 +73,9 @@
         <!-- LONGITUDE VALUE -->
         <input id="longitude" v-model.number="filters.longitude" placeholder="Longitudine" type="text">
         
+        <!-- RADIUS -->
+        <input v-model.number="filters.radius" min="1000" max="20000" placeholder="Longitudine" type="range">
+        
         <button @click="cercaAppartamenti">Carica Appartamenti</button>
 
         <ul>
