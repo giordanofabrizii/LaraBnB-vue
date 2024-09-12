@@ -79,13 +79,18 @@
         <button @click="cercaAppartamenti">Carica Appartamenti</button>
 
         <ul>
-            <li v-for="apartment in apartments" :key="apartment.id">
-                {{ apartment.name }} - {{ apartment.surface }} mq
-            </li>
+            <RouterLink v-for="apartment in apartments" :key="apartment.id" :to="{name: 'SingleApartment', params: {slug: apartment.slug}}">
+                <li>
+                    {{ apartment.name }} - {{ apartment.surface }} mq
+                </li>
+            </RouterLink>
         </ul>
     </div>
 </template>
 
 <style scoped>
-
+a{
+    text-decoration: none;
+    color: black;
+}
 </style>

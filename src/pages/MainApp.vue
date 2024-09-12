@@ -47,10 +47,10 @@ export default {
             <div class="container">
                 <h2>Appartamenti sponsorizzati</h2>
                 <div class="apartment-list">
-                    <div v-for="apartment in sponsoredApartments" :key="apartment.id" class="apartment-item">
+                    <RouterLink v-for="apartment in sponsoredApartments" :key="apartment.id" class="apartment-item" :to="{name: 'SingleApartment', params: {slug: apartment.slug}}">
                         <h3>{{ apartment.name }}</h3>
                         <p>{{ apartment.description }}</p>
-                    </div>
+                    </RouterLink>
 
                 </div>
             </div>
@@ -71,6 +71,11 @@ export default {
 
 
 <style scoped>
+
+a{
+    text-decoration: none;
+    color: black;
+}
 .jumbotron {
     padding: 3rem;
     background-color: #f8f9fa;

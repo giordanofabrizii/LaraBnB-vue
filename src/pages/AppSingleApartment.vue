@@ -12,8 +12,8 @@ export default{
         ApartmentShow
     },
     methods:{
-        getApartment(id){
-            axios.get(`http://127.0.0.1:8000/api/apartments/${id}`,{
+        getApartment(slug){
+            axios.get(`http://127.0.0.1:8000/api/apartments/${slug}`,{
                 params: {
 
                 }
@@ -28,7 +28,7 @@ export default{
         }
     },
     created(){
-        this.getApartment(this.$route.params.id);
+        this.getApartment(this.$route.params.slug);
     }
 }
 </script>
