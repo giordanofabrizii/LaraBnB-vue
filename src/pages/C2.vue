@@ -1,16 +1,17 @@
 <script>
 export default {
-    name: "Home", 
     data() {
         return {
-            sponsoredApartments: []
+            sponsoredApartments: [],
         };
     },
     mounted() {
         // Fetch apartments sponsored from Laravel API
-        fetch('/api/sponsored-apartments')
+        fetch('http://127.0.0.1:8000/api/sponsored-apartments') 
             .then(response => response.json())
             .then(data => {
+                
+                console.log("Dati ricevuti:", data);
                 this.sponsoredApartments = data;
             })
             .catch(error => {
@@ -35,9 +36,13 @@ export default {
             <div class="container">
                 <h2>Appartamenti sponsorizzati</h2>
                 <div class="apartment-list">
-                    <div v-for="apartment in sponsoredApartments" :key="apartment.id" class="apartment-item">
+                    <div v-if="sponsoredApartments.length > 0" v-for="apartment in sponsoredApartments"
+                        :key="apartment.id" class="apartment-item">
                         <h3>{{ apartment.name }}</h3>
                         <p>{{ apartment.description }}</p>
+                    </div>
+                    <div v-else>
+                        <p>Nessun appartamento sponsorizzato disponibile.</p>
                     </div>
                 </div>
             </div>
@@ -56,8 +61,8 @@ export default {
     </div>
 </template>
 
-<style scoped>
 
+<style scoped>
 .jumbotron {
     padding: 3rem;
     background-color: #f8f9fa;
