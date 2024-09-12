@@ -1,0 +1,8 @@
+@import "@tomtom-international/web-sdk-maps";
+@import '@tomtom-international/web-sdk-plugin-searchbox/dist/SearchBox.css';
+
+#map{
+    height: 50rem;
+    margin: 2rem auto;
+    aspect-ratio: 1 / 1;
+}

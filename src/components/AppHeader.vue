@@ -8,8 +8,8 @@ export default{
                     'label': 'nome della home'
                 },
                 {
-                    'name': 'bnb',
-                    'label': 'nome del link'
+                    'name': 'search',
+                    'label': 'Search'
                 },
             ],
         }
