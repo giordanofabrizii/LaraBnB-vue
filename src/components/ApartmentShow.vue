@@ -15,7 +15,7 @@ export default{
 
 <template>
     <div class="apartment">
-        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQeJQeJyzgAzTEVqXiGe90RGBFhfp_4RcJJMQ&s" alt="Immagine">
+        <img :src="'http://127.0.0.1:8000/storage/' + apartment.image " alt="Immagine">
         <h1>{{ apartment.name }}</h1>
         <h3>{{ apartment.description }}</h3>
         <div class="spec">
