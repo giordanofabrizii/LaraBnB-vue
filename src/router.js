@@ -1,8 +1,9 @@
 import { createRouter, createWebHistory } from 'vue-router';
 
-import C2 from './pages/C2.vue';
-import C1 from './pages/C1.vue';
+
 import AppSingleApartment from './pages/AppSingleApartment.vue';
+import MainApp from './pages/MainApp.vue';
+import ResearchApp from './pages/ResearchApp.vue';
 
 const router = createRouter({
     history: createWebHistory(),
@@ -10,16 +11,18 @@ const router = createRouter({
         {
             path: '/',
             name: 'home',
-            component: C2
+            component: MainApp
         },
         {
-            path: '/apartments',
-            name: 'bnb',
-            component: C1
-        },{
             path: '/apartments/:id',
             name: 'SingleApartment',
             component: AppSingleApartment
+        },
+        {
+            path: '/search',
+            name: 'search',
+            component: ResearchApp
+
         },
     ]
 });
