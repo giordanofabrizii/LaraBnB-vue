@@ -6,46 +6,42 @@ import SearchBox from '@tomtom-international/web-sdk-plugin-searchbox';
 export default {
     name: 'App',
     mounted() {
-        // Inizializza la mappa quando il componente è montato
-        const map = tt.map({
-            key: "9ndAiLQMA0GuE3FRyeJN3u42T2H4UMvU", // Verifica che la tua chiave API sia valida
+        const map = tt.map({ // inizialize the map
+            key: "9ndAiLQMA0GuE3FRyeJN3u42T2H4UMvU", // api key
             container: "map",
             center: [0, 0],
             zoom: 2
         });
 
-        // Opzioni per il SearchBox
-        const searchOptions = {
+        const searchOptions = { 
             key: "9ndAiLQMA0GuE3FRyeJN3u42T2H4UMvU",
             language: "it-IT",
-            limit: 10, // Limita il numero di risultati per migliorare la leggibilità
+            limit: 10, // max number of results
         };
 
-        // Inizializza il SearchBox con le opzioni corrette
-        const searchBox = new SearchBox(services, {
+        const searchBox = new SearchBox(services, { // inizialize the search box
             searchOptions: searchOptions,
-            placeholder: "Cerca una posizione", // Aggiunta di un placeholder per la barra di ricerca
+            placeholder: "Cerca una posizione", 
         });
 
-        // Aggiungi il SearchBox come controllo sulla mappa
-        map.addControl(searchBox, 'top-left');
+        map.addControl(searchBox, 'top-left'); // add the search box on the map
 
-        // Debug: Assicurati che il SearchBox sia stato creato correttamente
-        console.log("SearchBox aggiunto alla mappa.");
+        const markers = [];
 
-        // Gestisci l'evento quando vengono trovati risultati di ricerca
-        searchBox.on('tomtom.searchbox.resultsfound', function (data) {
+        searchBox.on('tomtom.searchbox.resultsfound', (data) => { // when results are found
             const results = data.data.results.fuzzySearch.results;
             if (results.length > 0) {
-                // Zoom sulla prima posizione trovata
-                const firstResult = results[0];
+                const firstResult = results[0]; // take only the first option
                 map.flyTo({
                     center: firstResult.position,
                     zoom: 14,
                 });
 
-                // Creazione marker
-                new tt.Marker()
+                markers.forEach(marker => marker.remove()); // remove the old marker
+
+                markers.length = 0;
+
+                const marker = new tt.Marker() // create the marker on the result
                     .setLngLat(firstResult.position)
                     .setPopup(new tt.Popup({ offset: 5 }).setHTML(`
                         <h1>${firstResult.address.municipality || 'Località'}</h1>
@@ -53,21 +49,32 @@ export default {
                     `))
                     .addTo(map);
 
+                    markers.push(marker);
+
                 // save the datas
-                document.getElementById('latitude').value = firstResult.position.lat;
-                document.getElementById('longitude').value = firstResult.position.lng;
+                this.$emit('update-coordinates', {
+                    lat: firstResult.position.lat,
+                    lng: firstResult.position.lng
+                });
             } else {
                 console.log("Nessun risultato trovato.");
             }
         });
 
-        // Gestisci l'evento per quando la ricerca non produce risultati
-        searchBox.on('tomtom.searchbox.noresults', function () {
+        searchBox.on('tomtom.searchbox.resultscleared', () => { // when the searchbox is cleared
+            this.$emit('update-coordinates', {
+                lat: null,
+                lng: null
+            });
+            markers.forEach(marker => marker.remove());
+            markers.length = 0;
+        });
+
+        searchBox.on('tomtom.searchbox.noresults', function () { // whene no results are found
             console.log("Nessun risultato trovato per questa ricerca.");
         });
 
-        // Gestisci l'evento per errori durante la ricerca
-        searchBox.on('tomtom.searchbox.error', function (error) {
+        searchBox.on('tomtom.searchbox.error', function (error) { // whene the search results in error
             console.error("Errore durante la ricerca:", error);
         });
     }

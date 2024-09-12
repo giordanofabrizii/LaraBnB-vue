@@ -17,6 +17,9 @@
                     room_number: null,
                     bath_number: null,
                     bed_number: null,
+                    latitude: null,
+                    longitude: null,
+                    radius: null,
                     price: null,
                 },
             };
@@ -27,11 +30,18 @@
                     const response = await axios.get('http://127.0.0.1:8000/api/apartments', { // take the apartments
                         params: this.filters,
                     });
+
+                    console.log(this.filters)
+
                     this.apartments = response.data; // save the datas
                 } catch (error) {
                     console.error('ERRORE', error);
                 }
             },
+            updateCoordinates(coordinates) {
+                this.filters.latitude = coordinates.lat;
+                this.filters.longitude = coordinates.lng;
+            }
         },
     };
 </script>
@@ -40,7 +50,7 @@
     <div>
         <h1>Appartamenti</h1>
 
-        <MapApp/>
+        <MapApp @update-coordinates="updateCoordinates" />
 
         <input v-model="filters.name" placeholder="Inserisci il nome" type="text">
 
@@ -56,6 +66,12 @@
 
         <!-- BED MIN VALUE -->
         <input v-model.number="filters.bed" placeholder="Numero minimo di persone ammesse" type="text">
+
+        <!-- LATITUDE VALUE -->
+        <input id="latitude" v-model.number="filters.latitude" placeholder="Latitudine" type="text">
+
+        <!-- LONGITUDE VALUE -->
+        <input id="longitude" v-model.number="filters.longitude" placeholder="Longitudine" type="text">
         
         <button @click="cercaAppartamenti">Carica Appartamenti</button>
 
