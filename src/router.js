@@ -1,6 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router';
 
-import C2 from './pages/C2.vue';
+import MainApp from './pages/MainApp.vue';
 import ResearchApp from './pages/ResearchApp.vue';
 
 const router = createRouter({
@@ -9,7 +9,7 @@ const router = createRouter({
         {
             path: '/',
             name: 'home',
-            component: C2
+            component: MainApp
         },
         {
             path: '/search',
