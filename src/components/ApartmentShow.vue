@@ -77,61 +77,157 @@ export default{
 </script>
 
 <template>
-    <div class="apartment">
-        <img :src="'http://127.0.0.1:8000/storage/' + apartment.image " alt="Immagine">
-        <h1>{{ apartment.name }}</h1>
-        <h3>{{ apartment.description }}</h3>
-        <div class="spec">
-            <p>Superfice: {{ apartment.surface }} m<sup>2</sup></p>
-            <p>Stanze: {{ apartment.n_room }}</p>
-            <p>Letti: {{ apartment.n_bed }}</p>
-            <p>Bagni: {{ apartment.n_bath }}</p>
-            <p>Prezzo: {{ apartment.price }} &#8364;</p>
-            <ul>
-                <li v-for="services in apartment.services">
-                    <i :class="services.icon"></i>
-                    {{ services.name }}
-                </li>
-            </ul>
+    <div class="container">
+        <div class="apartment">
+            <img :src="'http://127.0.0.1:8000/storage/' + apartment.image " alt="Immagine">
+            <h1>{{ apartment.name }}</h1>
+            <h3>{{ apartment.description }}</h3>
+            <div class="spec">
+                <p>Superficie: {{ apartment.surface }} m<sup>2</sup></p>
+                <p>Stanze: {{ apartment.n_room }}</p>
+                <p>Letti: {{ apartment.n_bed }}</p>
+                <p>Bagni: {{ apartment.n_bath }}</p>
+                <p>Prezzo: {{ apartment.price }} &#8364;</p>
+                <ul>
+                    <li v-for="services in apartment.services">
+                        <i :class="services.icon"></i>
+                        {{ services.name }}
+                    </li>
+                </ul>
+            </div>
         </div>
 
         <div class="message">
-            <h1>Invia un messaggio</h1>
-            <input type="text" name="name" id="name" v-model="message.name" placeholder="Inserisci il tuo nome">
-            <input type="text" name="email" id="email" v-model="message.email" placeholder="Inserisci la tua mail">
-            <div class="error"></div>
-            <input type="text" name="text" id="text" v-model="message.text" placeholder="Scrivi qui il tuo messaggio">
-            <div class="error"></div>
-            <button @click="sendMessage">Invia</button>
+            <section>
+                <div class="insert off">
+                    <h1>Invia un messaggio</h1>
+                    <label for="name">Nome:</label>
+                    <input type="text" name="name" id="name" v-model="message.name" placeholder="Inserisci il tuo nome">
+                    <label for="name">Email:</label>
+                    <input type="text" name="email" id="email" v-model="message.email" placeholder="Inserisci la tua mail">
+                    <div class="error"></div>
+                    <label for="text">Messaggio:</label>
+                    <input type="text" name="text"  id="text" v-model="message.text" placeholder="Scrivi qui il tuo messaggio" rows="3">
+                    <div class="error"></div>
+                    <button @click="sendMessage">Invia</button>
+                </div>
+                <div class="success on">
+                    <i class="fa-solid fa-check"></i>
+                    <h1>Perfetto!</h1>
+                    <p>Il tuo messaggio &egrave; stato inviato, riceverai una risposta nella tua casella di posta</p>
+                </div>
+            </section>
         </div>
     </div>
 </template>
 
-<style scoped>
-div.apartment{
-    margin: auto;
-    max-width: 560px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
+<style lang="scss" scoped>
+@use '../style/partials/variables' as *;
+
+div.container{
+    .apartment{
+        max-width: 50rem;
+        margin: 0 auto;
+        padding: 1rem;
+        background-color: white;
+        border-radius: 12px;
+        width: 100%;
+        img{
+            border-radius: 6px;
+            height: 30rem;
+            object-fit: cover;
+            object-position: bottom;
+            width: 100%;
+        }
+        h3{
+            font-weight: normal;
+        }
+
+        div.spec{
+            margin-top: 1rem;
+    
+            ul{
+                margin-top: 1rem;
+                list-style: none;
+                padding: 0;
+                display: flex;
+                li{
+                    margin-right: .5rem;
+                }
+            }
+        }
+    }
+}
+.message{
+    position: absolute;
+    bottom: 0;
+    right: 50px;
+    padding-left:  1rem;
+
+    section{
+        background-color: $primary-color;
+        color: white;
+        border-top-left-radius: 8px;
+        border-top-right-radius: 8px;
+        border-bottom: none;
+        display: flex;
+        flex-direction: column;
+        padding: 1rem;
+        width: 25rem;
+
+        input{
+            width: 100%;
+            margin: .5rem 0;
+            padding: .5rem;
+            border: 1px solid white;
+            border-radius: 4px;
+
+            &.big{
+                height: 6rem;
+            }
+        }
+
+        .insert.off{
+            display: none;
+        }
+
+        .success{
+            display: none;
+            &.on{
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                height: 100%;
+            }
+
+            i{
+                background-color: rgb(0, 207, 17);
+                padding: 1.3rem;
+                border-radius: 50%;
+                margin: 1rem 0;
+            }
+
+            h1{
+                margin-bottom: 1rem;
+            }
+
+            p{
+                text-align: center;
+                max-width: 15rem;
+            }
+
+        }   
+    }
+    .error{
+        color: red;
+        padding: 1rem;
+        display: none;
+    }
+    
+    .error.on{
+        display: block;
+    }
 }
 
-div.spec{
-    width: 100%;
-}
-ul{
-    list-style: none;
-    padding: 0;
-}
 
-.error{
-    color: red;
-    padding: 1rem;
-    display: none;
-}
-
-.error.on{
-    display: block;
-}
 </style>
