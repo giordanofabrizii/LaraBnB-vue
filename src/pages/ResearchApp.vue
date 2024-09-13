@@ -83,6 +83,13 @@ export default {
         <!-- RADIUS -->
         <input v-model.number="filters.radius" min="1000" max="20000" @input="updateUrlWithFilters" placeholder="Longitudine" type="range">
 
+        <!-- SERVICES-->
+        <h2>Servizi</h2>
+        <div v-for="service in services" :key="service.name">
+            <input type="checkbox" :value="service.name" v-model="filters.services" @change="updateUrlWithFilters">
+            <label>{{ service.name }}</label>
+        </div>
+
         <button @click="cercaAppartamenti">Carica Appartamenti</button>
 
         <ul>
