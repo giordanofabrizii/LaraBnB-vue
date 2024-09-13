@@ -51,21 +51,9 @@ export default {
                         <h3>{{ apartment.name }}</h3>
                         <p>{{ apartment.description }}</p>
                     </RouterLink>
-
                 </div>
             </div>
         </section>
-
-        <!-- Footer Section -->
-        <footer class="footer">
-            <div class="container">
-                <ul>
-                    <li><a href="#">ESEMPIO</a></li>
-                    <li><a href="#">ESEMPIO</a></li>
-                    <li><a href="#">ESEMPIO</a></li>
-                </ul>
-            </div>
-        </footer>
     </div>
 </template>
 
