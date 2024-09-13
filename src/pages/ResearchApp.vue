@@ -11,6 +11,29 @@ export default {
     data() {
         return {
             apartments: [],
+            services: [
+                    { name: 'Aria Condizionata' },
+                    { name: 'Piscina' },
+                    { name: 'Giardino' },
+                    { name: 'Vista cortile interno' },
+                    { name: 'Portico' },
+                    { name: 'Lavastoviglie' },
+                    { name: 'Lavatrice' },
+                    { name: 'Wifi' },
+                    { name: 'Smart-Tv' },
+                    { name: 'Barbecue' },
+                    { name: 'Vasca da Bagno' },
+                    { name: 'Jacuzzi' },
+                    { name: 'Ascensore' },
+                    { name: 'Accessibilità' },
+                    { name: 'Riscaldamento' },
+                    { name: 'Microonde' },
+                    { name: 'Parcheggio' },
+                    { name: 'Bidet' },
+                    { name: 'Ferro da Stiro' },
+                    { name: 'Kit di pronto soccorso' },
+                    { name: 'Macchina del caffè' },
+                ],
             filters: {
                 name: null,
                 surface_min: null,
@@ -22,6 +45,7 @@ export default {
                 longitude: null,
                 radius: null,
                 price: null,
+                services: [],
             },
         };
     },
@@ -82,6 +106,13 @@ export default {
 
         <!-- RADIUS -->
         <input v-model.number="filters.radius" min="1000" max="20000" @input="updateUrlWithFilters" placeholder="Longitudine" type="range">
+
+        <!-- SERVICES-->
+        <h2>Servizi</h2>
+        <div v-for="service in services" :key="service.name">
+            <input type="checkbox" :value="service.name" v-model="filters.services" @change="updateUrlWithFilters">
+            <label>{{ service.name }}</label>
+        </div>
 
         <button @click="cercaAppartamenti">Carica Appartamenti</button>
 
