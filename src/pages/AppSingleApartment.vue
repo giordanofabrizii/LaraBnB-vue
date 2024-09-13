@@ -20,7 +20,6 @@ export default{
             })
             .then((response)=> {
                 this.apartments = response.data.results;
-                console.log(response.data.results)
             })
             .catch(function (error){
                 console.log(error);
