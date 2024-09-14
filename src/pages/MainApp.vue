@@ -65,9 +65,12 @@ a{
     color: black;
 }
 .jumbotron {
-    padding: 3rem;
-    background-color: #f8f9fa;
     text-align: center;
+    background-color: white;
+    
+    .container{
+        padding: 3rem;
+    }
 }
 
 .search-bar {
@@ -95,25 +98,5 @@ a{
     border: 1px solid #ccc;
     padding: 1rem;
     width: 30%;
-}
-
-.footer {
-    padding: 2rem;
-    background-color: #333;
-    color: white;
-    text-align: center;
-    position: fixed;
-    bottom: 0;
-    width: 100%;
-}
-
-.footer ul {
-    list-style: none;
-    padding: 0;
-}
-
-.footer li {
-    display: inline;
-    margin: 0 1rem;
 }
 </style>

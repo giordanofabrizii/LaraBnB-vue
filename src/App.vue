@@ -1,7 +1,13 @@
 <script>
     import AppHeader from './components/AppHeader.vue';
+    import { store } from './store.js';
 
     export default{
+        data() {
+            return{
+                store,
+            }
+        },
         components:{
             AppHeader
         }
@@ -9,10 +15,25 @@
 </script>
 
 <template>
-    <AppHeader/>
-    <router-view></router-view>
+    <div class="container" :class="(store.darkMode == true) ? 'dark' : ''">
+        <AppHeader/>
+        <main>
+            <router-view></router-view>
+        </main>
+    </div>
 </template>
 
-<style scoped>
+<style lang="scss" scoped>
+@use './style/partials/variables' as *;
 
+.container.dark{
+    @import './style/dark.scss';
+}
+
+main{
+    background-color: $primary-color;
+    border-top-left-radius: 24px;
+    border-top-right-radius: 24px;
+    height: calc(100vh - 3.2rem);
+}
 </style>
