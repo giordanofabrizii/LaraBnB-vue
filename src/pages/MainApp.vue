@@ -32,11 +32,12 @@ export default {
     <div>
         <!-- Jumbotron Section -->
         <section class="jumbotron">
-            <div class="container jumbotron-content">
-                <h1>LaraBnb</h1>
+            <div class="jumbotron-content">
+                <h1>Tempo di partire!</h1>
                 <p>Trova l'appartamento perfetto per il tuo soggiorno</p>
-                <div class="search-button">
-                    <button @click="goToSearchPage">Vai alla pagina di ricerca</button>
+                <div class="search">
+                    <input type="text" name="city" id="city" placeholder="Dove vuoi andare?">
+                    <i @click="goToSearchPage" class="fa-solid fa-search"></i>
                 </div>
             </div>
         </section>
@@ -58,7 +59,8 @@ export default {
 </template>
 
 
-<style scoped>
+<style lang="scss" scoped>
+@use '../style/partials/variables' as *;
 
 a{
     text-decoration: none;
@@ -68,24 +70,43 @@ a{
     text-align: center;
     background-color: white;
     
-    .container{
+    .jumbotron-content{
         padding: 3rem;
+
+        p{
+            margin: .7rem 0 .5rem 0;
+        }
+
+        .search{
+        padding: .1rem;
+        border-radius: 2rem;
+        width: 17rem;
+        margin: 0 auto;
+        display: flex;
+        align-items: center;
+        border: 1px solid $primary-color;
+
+        input{
+            width: 100%;
+            font-size: 1.2rem;
+            line-height: 1.5rem;
+            margin-left: .5rem;
+            border: none;
+
+            &:focus{
+                outline: none;
+                border: none;
+            }
+        }
+
+        i{
+            border-radius: 50%;
+            padding: 1rem;
+            background-color: $primary-color;
+            color: white;
+        }
     }
-}
-
-.search-bar {
-    margin: 0 auto;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.search-bar input {
-    padding: 0.5rem;
-    font-size: 1rem;
-    width: 300px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
+    }
 }
 
 .sponsored-apartments .apartment-list {
