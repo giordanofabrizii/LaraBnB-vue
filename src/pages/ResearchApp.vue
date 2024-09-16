@@ -99,11 +99,13 @@ export default {
     <div id="research-app">
         <h1>Appartamenti</h1>
 
-        <MapApp @update-coordinates="updateCoordinates" />
+        
 
         <div class="dropdown">
             <button class="dropbtn" @click="openDropdown">Personalizza la ricerca!</button>
             <div v-if="isOpen" class="dropdown-content">
+
+                <MapApp @update-coordinates="updateCoordinates" />
 
                 <input v-model="filters.name" @input="updateUrlWithFilters" placeholder="Inserisci il nome" type="text">
 
@@ -136,7 +138,7 @@ export default {
                     <label>{{ service.name }}</label>
                 </div>
 
-                <button @click="cercaAppartamenti">Carica Appartamenti</button>
+                <button id="search-btn" @click="cercaAppartamenti">Carica Appartamenti</button>
 
             </div>
         </div>
@@ -150,7 +152,7 @@ export default {
                 </li>
             </RouterLink>
         </ul>
-    </div>
+    
         <div v-if="isSearchExectuted && apartments.length === 0">
             <h3>Purtroppo non sono presenti appartamenti disponibili</h3>
             <p>Effettua una nuova ricerca</p>
@@ -184,14 +186,16 @@ a {
 .dropdown {
     position: relative;
     display: inline-block;
-    width: 100vw;
     margin: 3rem;
     display: flex;
     flex-direction: column;
+    justify-content: center;
+    align-items: center;
     transition: all 0.3s ease;
 
-    .dropbtn{
+    button{
         padding: 1rem 2rem 1rem 2rem;
+        width: 15rem;
         margin-bottom: 2rem;
         border-radius: 2rem;
         background-color: #2f408e;
