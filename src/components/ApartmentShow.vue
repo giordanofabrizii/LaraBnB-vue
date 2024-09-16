@@ -17,6 +17,7 @@ export default{
         sendMessage: function (){
             this.verifyEmail();
             this.verifyText();
+            this.verifyName();
 
             function validate(){
                 const inputs = document.querySelectorAll('.error');
@@ -56,6 +57,16 @@ export default{
             })
             }
 
+        },
+        verifyName: function(){
+            let nameValue = document.getElementById('name').value;
+            let errorEl = document.querySelector('#name + .error');
+            if (nameValue.trim().length <=0) {
+                errorEl.classList.add('on');
+                errorEl.innerText = "Inserisci il tuo Nome"
+            } else {
+                errorEl.classList.remove('on');
+            }
         },
         verifyEmail: function(){
             function testEmail(email){
@@ -99,15 +110,18 @@ export default{
         },
         messageToggle: function(){
             const msgToggleEl = document.getElementById('message-control');
+            const msgTitleEl = document.getElementById('title-control');
             const msgInputEl = document.getElementById('insert');
             const successEl = document.getElementById('success');
 
             if (!(msgInputEl.classList.contains('off')) || (successEl.classList.contains('on'))){ // if it's visualized
                 msgToggleEl.classList = 'fa-solid fa-angle-up';
+                msgTitleEl.classList.add('show');
                 msgInputEl.classList.add('off');
                 successEl.classList.remove('on');
             } else {
                 msgToggleEl.classList = 'fa-solid fa-close';
+                msgTitleEl.classList.remove('show');
                 msgInputEl.classList.remove('off');
                 successEl.classList.remove('on');
             }
@@ -117,6 +131,7 @@ export default{
         this.initMap();
         document.getElementById('email').addEventListener('input',this.verifyEmail);
         document.getElementById('text').addEventListener('input',this.verifyText);
+        document.getElementById('name').addEventListener('input',this.verifyName);
     },
 
     props:[
@@ -150,15 +165,17 @@ export default{
 
         <div class="message">
             <section>
+                <h1 id="title-control">Invia un messaggio</h1>
                 <i id="message-control" class="fa-solid fa-close" @click="this.messageToggle"></i>
                 <div id="insert">
                     <h1>Invia un messaggio</h1>
-                    <label for="name">Nome:</label>
+                    <label for="name">Nome*:</label>
                     <input type="text" name="name" id="name" v-model="message.name" placeholder="Inserisci il tuo nome">
-                    <label for="name">Email:</label>
+                    <div class="error"></div>
+                    <label for="name">Email*:</label>
                     <input type="text" name="email" id="email" v-model="message.email" placeholder="Inserisci la tua mail">
                     <div class="error"></div>
-                    <label for="text">Messaggio:</label>
+                    <label for="text">Messaggio*:</label>
                     <input type="text" name="text"  id="text" v-model="message.text" placeholder="Scrivi qui il tuo messaggio" rows="3">
                     <div class="error"></div>
                     <button @click="sendMessage">Invia</button>
@@ -166,7 +183,7 @@ export default{
                 <div id="success">
                     <i class="fa-solid fa-check"></i>
                     <h1>Perfetto!</h1>
-                    <p>Il tuo messaggio &egrave; stato inviato, riceverai una risposta nella tua casella di posta</p>
+                    <p>Il tuo messaggio &egrave; stato inviato, riceverai una risposta nella tua casella di posta.</p>
                 </div>
             </section>
         </div>
@@ -225,6 +242,7 @@ div.container{
     bottom: 0;
     right: 50px;
     padding-left:  1rem;
+    
 
     section{
         background-color: $primary-color;
@@ -237,23 +255,45 @@ div.container{
         padding: 1.3rem;
         width: 25rem;
         position: relative;
+        
+
+        #title-control.show{
+            display: inline-block;
+        }
+
+        #title-control{
+            display: none;
+        }
 
         i{
             position: absolute;
-            right: .3rem;
-            top: .3rem;
+            right: 1rem;
+            top: 1.3rem;
             padding: .4rem;
             border: 1px solid white;
             border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        i:hover{
+            background-color: white;
+            color:$primary-color ;
+        }
+
+        i.fa-check{
+            position: relative;
+            right: 0;
+            top: 0;
+            font-size: 2rem;
         }
 
         input{
             width: 100%;
-            margin-top: .5rem;
             padding: .5rem;
             border: 1px solid white;
             border-radius: 4px;
-
+            margin-bottom: .5rem;
             &.big{
                 height: 6rem;
             }
@@ -265,8 +305,19 @@ div.container{
             border: none;
             padding: .5rem;
             border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Ombra */
+            margin-left: 80%;
         }
 
+        button:hover{
+            background-color: rgb(231, 231, 231);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2); /* Effetto ombra più intensa al passaggio del mouse */
+            transform: translateY(-1px); /* Leggero sollevamento del bottone */
+        }
+
+        
         #insert.off{
             display: none;
         }
@@ -281,7 +332,7 @@ div.container{
             }
 
             i{
-                background-color: rgb(0, 207, 17);
+                background-color: rgb(43, 190, 55);
                 padding: 1.3rem;
                 border-radius: 50%;
                 margin: 1rem 0;
