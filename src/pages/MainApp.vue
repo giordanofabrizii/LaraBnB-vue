@@ -1,30 +1,62 @@
 <script>
+import { store } from '../store';
+import axios from 'axios';
+
 export default {
     data() {
         return {
+            store,
             sponsoredApartments: [],
             searchQuery: '',
         };
     },
+    methods: {
+        getApartment() {
+            const citySearched = document.getElementById('city').value;
+            console.log(citySearched)
+            const url = `https://api.tomtom.com/search/2/geocode/${encodeURIComponent(citySearched)}.json?key=9ndAiLQMA0GuE3FRyeJN3u42T2H4UMvU`;
+
+            fetch(url)
+            .then(response => response.json())
+            .then(data => {
+                if (data.results) {
+                    const latitude = data.results[0].position.lat;
+                    const longitude = data.results[0].position.lon;
+
+                    let filters = {
+                        'latitude': latitude,
+                        'longitude': longitude,
+                    }
+
+                    axios.get(`http://127.0.0.1:8000/api/apartments`,{
+                        params: filters,
+                    })
+                    .then((response)=> {
+                        this.store.apartments = response.data;
+                    })
+                } 
+            })
+            .catch(error => {
+                console.error('Errore:', error);
+            });
+        },
+        goToSearchPage() {
+            this.getApartment();
+            this.$router.push({ name: 'search' });
+        }
+    },  
     mounted() {
         // Fetch apartments sponsored from Laravel API
         fetch('http://127.0.0.1:8000/api/sponsored-apartments')
             .then(response => response.json())
             .then(data => {
 
-                console.log("Dati ricevuti:", data);
                 this.sponsoredApartments = data;
             })
             .catch(error => {
                 console.error("Error fetching sponsored apartments:", error);
             });
     },
-    // 
-    methods: {
-    goToSearchPage() {
-        this.$router.push({ name: 'search' });
-        }
-    }
 };
 </script>
 
