@@ -1,5 +1,6 @@
 <script>
 import axios from 'axios'
+import tt from '@tomtom-international/web-sdk-maps';
 
 export default{
     data() {
@@ -32,7 +33,6 @@ export default{
                 this.message.apartment_id = this.apartment.id
             axios.post('http://127.0.0.1:8000/api/message', this.message)
             .then(response => {
-
                 // show success text
                 const msgEl = document.getElementById('insert');
                 const successEl = document.getElementById('success');
@@ -81,16 +81,34 @@ export default{
             } else {
                 errorEl.classList.remove('on');
             }
-        }
-    },
+        },
+        initMap() {
+            if (this.apartment.latitude && this.apartment.longitude) {
+                const map = tt.map({
+                    key: '9ndAiLQMA0GuE3FRyeJN3u42T2H4UMvU',
+                    container: 'map', 
+                    center: [this.apartment.longitude, this.apartment.latitude],
+                    zoom: 14
+                });
+                const marker = new tt.Marker()
+                    .setLngLat([this.apartment.longitude, this.apartment.latitude])
+                    .addTo(map);
+            } else {
+                console.error('Coordinate non valide per l\'appartamento.');
+            }
+    }
+},
     mounted(){
+        this.initMap();
         document.getElementById('email').addEventListener('input',this.verifyEmail);
         document.getElementById('text').addEventListener('input',this.verifyText);
     },
+
     props:[
         'apartment'
     ]
 }
+
 </script>
 
 <template>
@@ -112,6 +130,7 @@ export default{
                     </li>
                 </ul>
             </div>
+            <div id="map" class="show-map"></div>
         </div>
 
         <div class="message">
@@ -177,6 +196,11 @@ div.container{
                 }
             }
         }
+    }
+    div.show-map{
+        height: 150px;
+        width: 300px;
+        
     }
 }
 .message{
