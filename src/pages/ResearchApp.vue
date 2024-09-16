@@ -11,6 +11,7 @@ export default {
     data() {
         return {
             apartments: [],
+            sponsoredApartments: [],
             services: [
                     { name: 'Aria Condizionata' },
                     { name: 'Piscina' },
@@ -99,7 +100,9 @@ export default {
     <div id="research-app">
         <h1>Appartamenti</h1>
 
-        
+        <section class="first-results">
+
+        </section>
 
         <div class="dropdown">
             <button class="dropbtn" @click="openDropdown">Personalizza la ricerca!</button>
@@ -163,15 +166,15 @@ export default {
                 {{ apartments.name }} - {{ apartments.surface }} mq
             </li>
         </div>
-            <ul v-else>
-                <RouterLink v-for="apartment in apartments" :key="apartment.id"
-                    :to="{ name: 'SingleApartment', params: { slug: apartment.slug } }">
-                    <li>
-                        {{ apartment.name }} - {{ apartment.surface }} mq
-                    </li>
-                </RouterLink>
-            </ul>
-        </div>
+        <ul v-else>
+            <RouterLink v-for="apartment in apartments" :key="apartment.id"
+                :to="{ name: 'SingleApartment', params: { slug: apartment.slug } }">
+                <li>
+                    {{ apartment.name }} - {{ apartment.surface }} mq
+                </li>
+            </RouterLink>
+        </ul>
+    </div>
 </template>
 
 <style scoped lang="scss">
@@ -181,6 +184,15 @@ export default {
 a {
     text-decoration: none;
     color: black;
+}
+
+#research-app{
+
+    h1{
+        color: white;
+        text-align: center;
+        margin: 1rem;
+    }
 }
 
 .dropdown {
@@ -197,6 +209,7 @@ a {
         padding: 1rem 2rem 1rem 2rem;
         width: 15rem;
         margin-bottom: 2rem;
+        border: none;
         border-radius: 2rem;
         background-color: #2f408e;
         color: white;
