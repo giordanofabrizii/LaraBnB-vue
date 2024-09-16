@@ -85,11 +85,11 @@ export default {
     <div id="map"></div>
 </template>
 
-<style scoped>
+<style lang="scss">
 
 
 #map{
-    height: 50rem;
+    height: 30rem;
     margin: 2rem auto;
     aspect-ratio: 1 / 1;
 }
