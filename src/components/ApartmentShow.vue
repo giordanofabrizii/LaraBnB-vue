@@ -238,7 +238,7 @@ div.container{
         width: 25rem;
         position: relative;
 
-        i{
+        > i{
             position: absolute;
             right: .3rem;
             top: .3rem;
