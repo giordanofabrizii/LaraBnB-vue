@@ -33,7 +33,23 @@ export default{
                 this.message.apartment_id = this.apartment.id
             axios.post('http://127.0.0.1:8000/api/message', this.message)
             .then(response => {
-                console.log(response.data.success); //Shows success message
+                // show success text
+                const msgEl = document.getElementById('insert');
+                const successEl = document.getElementById('success');
+
+                msgEl.classList.add('off');
+                successEl.classList.add('on');
+
+                setTimeout(() => {
+                    msgEl.classList.remove('off');
+                    successEl.classList.remove('on');
+                }, 7000);
+
+                // reset input field
+                this.message.email = '';
+                this.message.text= '';
+                this.message.name= '';
+                this.message.apartment_id= '';
             })
             .catch(error => {
                 console.error('Errore durante l\'invio del messaggio:', error);
@@ -51,7 +67,7 @@ export default{
             let errorEl = document.querySelector('#email + .error');
             if (!testEmail(emailValue)) {
                 errorEl.classList.add('on');
-                errorEl.innerText = "Inserisci un email valida"
+                errorEl.innerText = "Inserisci un' email valida"
             } else {
                 errorEl.classList.remove('on');
             }
@@ -99,9 +115,9 @@ export default{
     <div class="container">
         <div class="apartment">
             <img :src="'http://127.0.0.1:8000/storage/' + apartment.image " alt="Immagine">
-            <h1>{{ apartment.name }}</h1>
-            <h3>{{ apartment.description }}</h3>
             <div class="spec">
+                <h1>{{ apartment.name }}</h1>
+                <h3>{{ apartment.description }}</h3>
                 <p>Superficie: {{ apartment.surface }} m<sup>2</sup></p>
                 <p>Stanze: {{ apartment.n_room }}</p>
                 <p>Letti: {{ apartment.n_bed }}</p>
@@ -119,7 +135,7 @@ export default{
 
         <div class="message">
             <section>
-                <div class="insert off">
+                <div id="insert">
                     <h1>Invia un messaggio</h1>
                     <label for="name">Nome:</label>
                     <input type="text" name="name" id="name" v-model="message.name" placeholder="Inserisci il tuo nome">
@@ -131,7 +147,7 @@ export default{
                     <div class="error"></div>
                     <button @click="sendMessage">Invia</button>
                 </div>
-                <div class="success on">
+                <div id="success">
                     <i class="fa-solid fa-check"></i>
                     <h1>Perfetto!</h1>
                     <p>Il tuo messaggio &egrave; stato inviato, riceverai una risposta nella tua casella di posta</p>
@@ -145,34 +161,38 @@ export default{
 @use '../style/partials/variables' as *;
 
 div.container{
+    height: 100%;
     .apartment{
-        max-width: 50rem;
-        margin: 0 auto;
-        padding: 1rem;
+        height: 100%;
+        width: 100vw;
         background-color: white;
-        border-radius: 12px;
-        width: 100%;
+        display: flex;
         img{
-            border-radius: 6px;
-            height: 30rem;
+            height: 100%;
+            width: 50vw;
             object-fit: cover;
-            object-position: bottom;
-            width: 100%;
+            mask-image: linear-gradient(to right, rgb(0, 0, 0, 1) 70%, rgba(0, 0, 0, 0));
+            -webkit-mask-image: linear-gradient(to right, rgb(0, 0, 0, 1) 70%, rgba(0, 0, 0, 0));
         }
         h3{
             font-weight: normal;
         }
 
         div.spec{
-            margin-top: 1rem;
-    
+            margin-left: 1rem;
+
+            h3{
+                margin-bottom: 1rem;
+            }
+            
             ul{
                 margin-top: 1rem;
                 list-style: none;
                 padding: 0;
                 display: flex;
+                flex-wrap: wrap;
                 li{
-                    margin-right: .5rem;
+                    margin-right: 1rem;
                 }
             }
         }
@@ -202,7 +222,7 @@ div.container{
 
         input{
             width: 100%;
-            margin: .5rem 0;
+            margin-top: .5rem;
             padding: .5rem;
             border: 1px solid white;
             border-radius: 4px;
@@ -212,11 +232,19 @@ div.container{
             }
         }
 
-        .insert.off{
+        button{
+            margin-top: .5rem;
+            background-color: white;
+            border: none;
+            padding: .5rem;
+            border-radius: 12px;
+        }
+
+        #insert.off{
             display: none;
         }
 
-        .success{
+        #success{
             display: none;
             &.on{
                 display: flex;
@@ -245,7 +273,8 @@ div.container{
     }
     .error{
         color: red;
-        padding: 1rem;
+        padding-bottom: .5rem;
+        font-size: .8rem;
         display: none;
     }
     
@@ -254,5 +283,35 @@ div.container{
     }
 }
 
+@media screen and (max-width: 992px) {
+    div.container{
+        .apartment{
+            flex-direction: column;
+
+            img{
+                width: 100%;
+                mask-image: linear-gradient(to bottom, rgb(0, 0, 0, 1) 70%, rgba(0, 0, 0, 0));
+                -webkit-mask-image: linear-gradient(to bottom, rgb(0, 0, 0, 1) 70%, rgba(0, 0, 0, 0));
+            }
+            
+            div.spec{
+                margin: 1rem 0 2.5rem 1rem;
+
+            }
+        }
+    }
+}
+
+@media screen and (max-width: 992px) {
+    .message{
+        padding: 0;
+        right: 50%;
+        transform: translateX(50%);
+        
+        section{
+            max-width: 100vw;
+        }
+    }
+}
 
 </style>
