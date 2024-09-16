@@ -11,6 +11,7 @@ export default {
     },
     data() {
         return {
+            apartments: [],
             store,
             services: [
                     { name: 'Aria Condizionata' },
@@ -98,7 +99,9 @@ export default {
     <div id="research-app">
         <h1>Appartamenti</h1>
 
-        
+        <section class="first-results">
+
+        </section>
 
         <div class="dropdown">
             <button class="dropbtn" @click="openDropdown">Personalizza la ricerca!</button>
@@ -106,35 +109,42 @@ export default {
 
                 <MapApp @update-coordinates="updateCoordinates" />
 
-                <input v-model="filters.name" @input="updateUrlWithFilters" placeholder="Inserisci il nome" type="text">
+                <div class="filters">
+                    <input v-model="filters.name" @input="updateUrlWithFilters" placeholder="Inserisci il nome" type="text">
 
-                <!-- SURFACE SELECTOR -->
-                <input v-model.number="filters.surface_min" @input="updateUrlWithFilters" placeholder="Superficie minima" type="number">
-                <input v-model.number="filters.surface_max" @input="updateUrlWithFilters" placeholder="Superficie massima" type="number">
+                    <!-- SURFACE SELECTOR -->
+                    <input v-model.number="filters.surface_min" @input="updateUrlWithFilters" placeholder="Superficie minima" type="number">
+                    <input v-model.number="filters.surface_max" @input="updateUrlWithFilters" placeholder="Superficie massima" type="number">
 
-                <!-- ROOM MIN VALUE -->
-                <input v-model.number="filters.room_number" @input="updateUrlWithFilters" placeholder="Numero di stanze minime" type="text">
+                    <!-- ROOM MIN VALUE -->
+                    <input v-model.number="filters.room_number" @input="updateUrlWithFilters" placeholder="Numero di stanze minime" type="text">
 
-                <!-- BATH MIN VALUE -->
-                <input v-model.number="filters.bath_number" @input="updateUrlWithFilters" placeholder="Numero di bagni minimi" type="text">
+                    <!-- BATH MIN VALUE -->
+                    <input v-model.number="filters.bath_number" @input="updateUrlWithFilters" placeholder="Numero di bagni minimi" type="text">
 
-                <!-- BED MIN VALUE -->
-                <input v-model.number="filters.bed" @input="updateUrlWithFilters" placeholder="Numero minimo di persone ammesse" type="text">
+                    <!-- BED MIN VALUE -->
+                    <input v-model.number="filters.bed" @input="updateUrlWithFilters" placeholder="Numero minimo di persone ammesse" type="text">
 
-                <!-- LATITUDE VALUE -->
-                <input id="latitude" v-model.number="filters.latitude" @input="updateUrlWithFilters" placeholder="Latitudine" type="text">
+                    <!-- LATITUDE VALUE -->
+                    <input id="latitude" v-model.number="filters.latitude" @input="updateUrlWithFilters" placeholder="Latitudine" type="hidden">
 
-                <!-- LONGITUDE VALUE -->
-                <input id="longitude" v-model.number="filters.longitude" @input="updateUrlWithFilters" placeholder="Longitudine" type="text">
+                    <!-- LONGITUDE VALUE -->
+                    <input id="longitude" v-model.number="filters.longitude" @input="updateUrlWithFilters" placeholder="Longitudine" type="hidden">
+                </div>
 
                 <!-- RADIUS -->
-                <input v-model.number="filters.radius" min="1000" max="20000" @input="updateUrlWithFilters" placeholder="Longitudine" type="range">
+                <div class="search-radius">
+                    <p>Raggio di ricerca:</p>
+                    <input v-model.number="filters.radius" min="1000" max="20000" @input="updateUrlWithFilters" placeholder="Longitudine" type="range">    
+                </div>                    
 
                 <!-- SERVICES-->
-                <h2>Servizi</h2>
-                <div v-for="service in services" :key="service.name">
-                    <input type="checkbox" :value="service.name" v-model="filters.services" @change="updateUrlWithFilters">
-                    <label>{{ service.name }}</label>
+                <div class="services">
+                    <h2>Servizi</h2>
+                    <div v-for="service in services" :key="service.name">
+                        <input type="checkbox" :value="service.name" v-model="filters.services" @change="updateUrlWithFilters">
+                        <label>{{ service.name }}</label>
+                    </div>
                 </div>
 
                 <button id="search-btn" @click="cercaAppartamenti">Carica Appartamenti</button>
@@ -156,6 +166,20 @@ export default {
             <h3>Purtroppo non sono presenti appartamenti disponibili</h3>
             <p>Effettua una nuova ricerca</p>
         </div>
+
+        <div v-if="apartment in apartments" :key="apartment.id" :to="{name:'SingleApartment', params:{slug: partment.slug}}">
+            <li>
+                {{ apartments.name }} - {{ apartments.surface }} mq
+            </li>
+        </div>
+        <ul v-else>
+            <RouterLink v-for="apartment in apartments" :key="apartment.id"
+                :to="{ name: 'SingleApartment', params: { slug: apartment.slug } }">
+                <li>
+                    {{ apartment.name }} - {{ apartment.surface }} mq
+                </li>
+            </RouterLink>
+        </ul>
     </div>
 </template>
 
@@ -166,6 +190,15 @@ export default {
 a {
     text-decoration: none;
     color: black;
+}
+
+#research-app{
+
+    h1{
+        color: white;
+        text-align: center;
+        margin: 1rem;
+    }
 }
 
 .dropdown {
@@ -182,6 +215,7 @@ a {
         padding: 1rem 2rem 1rem 2rem;
         width: 15rem;
         margin-bottom: 2rem;
+        border: none;
         border-radius: 2rem;
         background-color: #2f408e;
         color: white;
@@ -198,9 +232,30 @@ a {
     .dropdown-content {
         background-color: #f9f9f9;
         min-width: 160px;
+        width: 100%;
         padding: 2rem;
         box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
         z-index: 1;
+        display: flex;
+        flex-direction: column;
+        flex-wrap: wrap;
+
+
+        .filters{
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: center;
+
+        }
+
+        input{
+            padding: .2rem;
+            border-radius: 5px;
+            margin: 1rem;
+            
+        }
+
     }
 }
 
