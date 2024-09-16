@@ -152,7 +152,7 @@ export default {
                 </li>
             </RouterLink>
         </ul>
-    </div>
+    
         <div v-if="isSearchExectuted && apartments.length === 0">
             <h3>Purtroppo non sono presenti appartamenti disponibili</h3>
             <p>Effettua una nuova ricerca</p>
