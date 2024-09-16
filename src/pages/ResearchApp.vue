@@ -161,7 +161,6 @@ a {
 .dropdown {
     position: relative;
     display: inline-block;
-    width: 100vw;
     margin: 3rem;
     display: flex;
     flex-direction: column;
