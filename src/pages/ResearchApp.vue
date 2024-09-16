@@ -110,35 +110,42 @@ export default {
 
                 <MapApp @update-coordinates="updateCoordinates" />
 
-                <input v-model="filters.name" @input="updateUrlWithFilters" placeholder="Inserisci il nome" type="text">
+                <div class="filters">
+                    <input v-model="filters.name" @input="updateUrlWithFilters" placeholder="Inserisci il nome" type="text">
 
-                <!-- SURFACE SELECTOR -->
-                <input v-model.number="filters.surface_min" @input="updateUrlWithFilters" placeholder="Superficie minima" type="number">
-                <input v-model.number="filters.surface_max" @input="updateUrlWithFilters" placeholder="Superficie massima" type="number">
+                    <!-- SURFACE SELECTOR -->
+                    <input v-model.number="filters.surface_min" @input="updateUrlWithFilters" placeholder="Superficie minima" type="number">
+                    <input v-model.number="filters.surface_max" @input="updateUrlWithFilters" placeholder="Superficie massima" type="number">
 
-                <!-- ROOM MIN VALUE -->
-                <input v-model.number="filters.room_number" @input="updateUrlWithFilters" placeholder="Numero di stanze minime" type="text">
+                    <!-- ROOM MIN VALUE -->
+                    <input v-model.number="filters.room_number" @input="updateUrlWithFilters" placeholder="Numero di stanze minime" type="text">
 
-                <!-- BATH MIN VALUE -->
-                <input v-model.number="filters.bath_number" @input="updateUrlWithFilters" placeholder="Numero di bagni minimi" type="text">
+                    <!-- BATH MIN VALUE -->
+                    <input v-model.number="filters.bath_number" @input="updateUrlWithFilters" placeholder="Numero di bagni minimi" type="text">
 
-                <!-- BED MIN VALUE -->
-                <input v-model.number="filters.bed" @input="updateUrlWithFilters" placeholder="Numero minimo di persone ammesse" type="text">
+                    <!-- BED MIN VALUE -->
+                    <input v-model.number="filters.bed" @input="updateUrlWithFilters" placeholder="Numero minimo di persone ammesse" type="text">
 
-                <!-- LATITUDE VALUE -->
-                <input id="latitude" v-model.number="filters.latitude" @input="updateUrlWithFilters" placeholder="Latitudine" type="text">
+                    <!-- LATITUDE VALUE -->
+                    <input id="latitude" v-model.number="filters.latitude" @input="updateUrlWithFilters" placeholder="Latitudine" type="hidden">
 
-                <!-- LONGITUDE VALUE -->
-                <input id="longitude" v-model.number="filters.longitude" @input="updateUrlWithFilters" placeholder="Longitudine" type="text">
+                    <!-- LONGITUDE VALUE -->
+                    <input id="longitude" v-model.number="filters.longitude" @input="updateUrlWithFilters" placeholder="Longitudine" type="hidden">
+                </div>
 
                 <!-- RADIUS -->
-                <input v-model.number="filters.radius" min="1000" max="20000" @input="updateUrlWithFilters" placeholder="Longitudine" type="range">
+                <div class="search-radius">
+                    <p>Raggio di ricerca:</p>
+                    <input v-model.number="filters.radius" min="1000" max="20000" @input="updateUrlWithFilters" placeholder="Longitudine" type="range">    
+                </div>                    
 
                 <!-- SERVICES-->
-                <h2>Servizi</h2>
-                <div v-for="service in services" :key="service.name">
-                    <input type="checkbox" :value="service.name" v-model="filters.services" @change="updateUrlWithFilters">
-                    <label>{{ service.name }}</label>
+                <div class="services">
+                    <h2>Servizi</h2>
+                    <div v-for="service in services" :key="service.name">
+                        <input type="checkbox" :value="service.name" v-model="filters.services" @change="updateUrlWithFilters">
+                        <label>{{ service.name }}</label>
+                    </div>
                 </div>
 
                 <button id="search-btn" @click="cercaAppartamenti">Carica Appartamenti</button>
@@ -226,9 +233,30 @@ a {
     .dropdown-content {
         background-color: #f9f9f9;
         min-width: 160px;
+        width: 100%;
         padding: 2rem;
         box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
         z-index: 1;
+        display: flex;
+        flex-direction: column;
+        flex-wrap: wrap;
+
+
+        .filters{
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: center;
+
+        }
+
+        input{
+            padding: .2rem;
+            border-radius: 5px;
+            margin: 1rem;
+            
+        }
+
     }
 }
 
