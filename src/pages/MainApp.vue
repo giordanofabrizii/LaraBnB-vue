@@ -82,7 +82,7 @@ export default {
             <h2>Consigliati per te</h2>
             <div class="apartment-list">
                 <RouterLink v-for="apartment in sponsoredApartments" :key="apartment.id" class="apartment-item" :to="{name: 'SingleApartment', params: {slug: apartment.slug}}">
-                    <img :src="'http://127.0.0.1:8000/storage/' + apartment.image " alt="">
+                    <img :src="'http://127.0.0.1:8000/storage/' + apartment.image " alt="apartment image">
                     <div class="overlay">
                         <h4>{{ apartment.name }}</h4>
                     </div>
