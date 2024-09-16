@@ -1,6 +1,7 @@
 <script>
 import axios from 'axios';
 import MapApp from '../components/MapApp.vue';
+import { store } from '../store';
 import { useRoute, useRouter } from 'vue-router';
 
 export default {
@@ -11,7 +12,7 @@ export default {
     data() {
         return {
             apartments: [],
-            sponsoredApartments: [],
+            store,
             services: [
                     { name: 'Aria Condizionata' },
                     { name: 'Piscina' },
@@ -49,7 +50,7 @@ export default {
                 services: [],
             },
             isOpen: false,
-            isSearchExectuted: false,
+            // isSearchExectuted: false,
 
         };
     },
@@ -62,11 +63,11 @@ export default {
                         params: this.filters,
                     });
 
-                    this.apartments = response.data;
-                    this.isSearchExectuted = true;
+                    this.store.apartments = response.data;
+                    // this.isSearchExectuted = true;
                 } catch (error) {
                     console.error('ERRORE', error);
-                    this.isSearchExectuted = true;
+                    // this.isSearchExectuted = true;
                 }
             },
         updateUrlWithFilters(){
@@ -76,8 +77,6 @@ export default {
         updateCoordinates(coordinates) {
             this.filters.latitude = coordinates.lat;
             this.filters.longitude = coordinates.lng;
-
-            console.log(this.filters)
         },
         
         openDropdown(){
@@ -91,7 +90,7 @@ export default {
         }
     },
     mounted() {
-    document.addEventListener("click", this.closeDropdownOnClickOutside);
+        document.addEventListener("click", this.closeDropdownOnClickOutside);
     },
 };
 </script>
@@ -155,7 +154,7 @@ export default {
 
         
         <ul>
-            <RouterLink v-for="apartment in apartments" :key="apartment.id"
+            <RouterLink v-for="apartment in store.apartments" :key="apartment.id"
                 :to="{ name: 'SingleApartment', params: { slug: apartment.slug } }">
                 <li>
                     {{ apartment.name }} - {{ apartment.surface }} mq
@@ -163,7 +162,7 @@ export default {
             </RouterLink>
         </ul>
     
-        <div v-if="isSearchExectuted && apartments.length === 0">
+        <div v-if="store.apartments.length === 0">
             <h3>Purtroppo non sono presenti appartamenti disponibili</h3>
             <p>Effettua una nuova ricerca</p>
         </div>
