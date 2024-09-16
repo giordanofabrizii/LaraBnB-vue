@@ -47,6 +47,7 @@ export default {
                 price: null,
                 services: [],
             },
+            isSearchExectuted: false,
         };
     },
     methods: {
@@ -59,8 +60,10 @@ export default {
                     });
 
                     this.apartments = response.data;
+                    this.isSearchExectuted = true;
                 } catch (error) {
                     console.error('ERRORE', error);
+                    this.isSearchExectuted = true;
                 }
             },
             updateUrlWithFilters(){
@@ -116,15 +119,25 @@ export default {
 
         <button @click="cercaAppartamenti">Carica Appartamenti</button>
 
-        <ul>
-            <RouterLink v-for="apartment in apartments" :key="apartment.id"
-                :to="{ name: 'SingleApartment', params: { slug: apartment.slug } }">
-                <li>
-                    {{ apartment.name }} - {{ apartment.surface }} mq
-                </li>
-            </RouterLink>
-        </ul>
-    </div>
+        <div v-if="isSearchExectuted && apartments.length === 0">
+            <h3>Purtroppo non sono presenti appartamenti disponibili</h3>
+            <p>Effettua una nuova ricerca</p>
+        </div>
+
+        <div v-if="apartment in apartments" :key="apartment.id" :to="{name:'SingleApartment', params:{slug: partment.slug}}">
+            <li>
+                {{ apartments.name }} - {{ apartments.surface }} mq
+            </li>
+        </div>
+            <ul v-else>
+                <RouterLink v-for="apartment in apartments" :key="apartment.id"
+                    :to="{ name: 'SingleApartment', params: { slug: apartment.slug } }">
+                    <li>
+                        {{ apartment.name }} - {{ apartment.surface }} mq
+                    </li>
+                </RouterLink>
+            </ul>
+        </div>
 </template>
 
 <style scoped>
