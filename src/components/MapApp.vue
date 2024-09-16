@@ -85,8 +85,7 @@ export default {
     <div id="map"></div>
 </template>
 
-<style lang="scss">
-
+<style scoped lang="scss">
 
 #map{
     height: 30rem;
