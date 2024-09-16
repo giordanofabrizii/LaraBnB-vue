@@ -96,8 +96,23 @@ export default{
             } else {
                 console.error('Coordinate non valide per l\'appartamento.');
             }
-    }
-},
+        },
+        messageToggle: function(){
+            const msgToggleEl = document.getElementById('message-control');
+            const msgInputEl = document.getElementById('insert');
+            const successEl = document.getElementById('success');
+
+            if (!(msgInputEl.classList.contains('off')) || (successEl.classList.contains('on'))){ // if it's visualized
+                msgToggleEl.classList = 'fa-solid fa-angle-up';
+                msgInputEl.classList.add('off');
+                successEl.classList.remove('on');
+            } else {
+                msgToggleEl.classList = 'fa-solid fa-close';
+                msgInputEl.classList.remove('off');
+                successEl.classList.remove('on');
+            }
+        },
+    },
     mounted(){
         this.initMap();
         document.getElementById('email').addEventListener('input',this.verifyEmail);
@@ -129,12 +144,13 @@ export default{
                         {{ services.name }}
                     </li>
                 </ul>
+                <div id="map" class="show-map"></div>
             </div>
-            <div id="map" class="show-map"></div>
         </div>
 
         <div class="message">
             <section>
+                <i id="message-control" class="fa-solid fa-close" @click="this.messageToggle"></i>
                 <div id="insert">
                     <h1>Invia un messaggio</h1>
                     <label for="name">Nome:</label>
@@ -197,7 +213,8 @@ div.container{
             }
         }
     }
-    div.show-map{
+    #map{
+        margin-top: 1rem;
         height: 150px;
         width: 300px;
         
@@ -217,8 +234,18 @@ div.container{
         border-bottom: none;
         display: flex;
         flex-direction: column;
-        padding: 1rem;
+        padding: 1.3rem;
         width: 25rem;
+        position: relative;
+
+        i{
+            position: absolute;
+            right: .3rem;
+            top: .3rem;
+            padding: .4rem;
+            border: 1px solid white;
+            border-radius: 8px;
+        }
 
         input{
             width: 100%;
