@@ -37,7 +37,6 @@ export default {
                     { name: 'Macchina del caffè' },
                 ],
             filters: {
-                name: null,
                 surface_min: null,
                 surface_max: null,
                 room_number: null,
@@ -64,6 +63,8 @@ export default {
                     });
 
                     this.store.apartments = response.data;
+                    console.log(this.filters);
+
                     // this.isSearchExectuted = true;
                 } catch (error) {
                     console.error('ERRORE', error);
@@ -113,13 +114,24 @@ export default {
         },
     },
     mounted() {
+        const citySearched = this.$route.query.city;
+        if (citySearched) {
+            this.filters.latitude = this.$route.query.latitude;
+            this.filters.longitude = this.$route.query.longitude;
+            console.log(this.filters);
+        }
         document.addEventListener("click", this.closeDropdownOnClickOutside);
+        this.cercaAppartamenti();
+        
     },
 };
 </script>
 
 <template>
     <div id="research-app">
+        <div v-if="this.citySearched">
+            <h2>{{ this.citySearched }}</h2>
+        </div>
         <h1>Appartamenti</h1>
 
         <section class="first-results">
@@ -130,10 +142,10 @@ export default {
             <button class="dropbtn" @click="openDropdown">Personalizza la ricerca!</button>
             <div v-if="isOpen" class="dropdown-content">
 
-                <MapApp @update-coordinates="updateCoordinates" />
+                <MapApp :latitude="filters.latitude" :longitude="filters.longitude" @update-coordinates="updateCoordinates" />
 
                 <div class="filters">
-                    <input v-model="filters.name" @input="updateUrlWithFilters" placeholder="Inserisci il nome" type="text">
+            
 
                     <!-- SURFACE SELECTOR -->
                     <input v-model.number="filters.surface_min" @input="updateUrlWithFilters" placeholder="Superficie minima" type="number">
@@ -378,8 +390,5 @@ a {
     text-align: center;
     padding-bottom: 3rem;
 }
-
-
-
 
 </style>
