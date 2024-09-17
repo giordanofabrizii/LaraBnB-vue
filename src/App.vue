@@ -32,8 +32,6 @@
 
 main{
     background-color: $primary-color;
-    border-top-left-radius: 24px;
-    border-top-right-radius: 24px;
     height: calc(100vh - 3.45rem);
     overflow: scroll;
 }
