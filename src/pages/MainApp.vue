@@ -106,7 +106,6 @@ export default {
                     <img :src="'http://127.0.0.1:8000/storage/' + apartment.image " alt="apartment image">
                     <div class="overlay">
                         <h4>{{ apartment.name }}</h4>
-                        <p>{{ apartment.surface }} m2</p>
                         <p>{{ apartment.address }}</p>                        
                     </div>
                 </RouterLink>
@@ -125,30 +124,43 @@ a{
 }
 .jumbotron {
     text-align: center;
-    background-color: white;
+    background-image: linear-gradient(white, $primary-color);
+    height: 22rem;
     
     .jumbotron-content{
         padding: 3rem;
 
+        p,
+        h1{
+            margin: .7rem auto;
+            text-shadow: 2px 2px 4px #3f3ca0;
+            color: #0d0c0c;
+        }
+
         p{
-            margin: .7rem 0 .5rem 0;
+            margin-bottom: 1.3rem;
         }
 
         .search{
-        padding: .1rem;
-        border-radius: 2rem;
-        width: 17rem;
-        margin: 0 auto;
-        display: flex;
-        align-items: center;
-        border: 1px solid $primary-color;
+            margin-top: .3rem;
+            padding: .1rem;
+            border-radius: 2rem;
+            width: 17rem;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            border: 1px solid $primary-color;
+            background-color: #ffffff7a;
+            box-shadow: 0 3px 10px #575971;
+
 
             input{
                 width: 100%;
                 font-size: 1.2rem;
                 line-height: 1.5rem;
-                margin-left: .5rem;
+                margin-left: 1rem;
                 border: none;
+                background-color: transparent;
 
                 &:focus{
                     outline: none;
@@ -161,7 +173,25 @@ a{
                 padding: 1rem;
                 background-color: $primary-color;
                 color: white;
+                cursor: pointer;
             }
+        }
+    }
+}
+
+.container.dark .jumbotron{
+    background-image: linear-gradient(white, rgb(58, 58, 58));
+
+    p,
+    h1{
+        text-shadow: 2px 2px 4px #18181a;
+    }
+
+    .search{
+        border: 1px solid #10216c;
+
+        i{
+            background-color: #162e98;
         }
     }
 }
@@ -172,6 +202,7 @@ a{
         text-align: center;
         color: white;
         padding-top: 2rem;
+        text-shadow: 0 0 10px #0d0c0c;
     }
 
     .apartment-list {
@@ -186,12 +217,12 @@ a{
 
 .apartment-item {
     position: relative;
-    border: 1px solid #060342;
+    border: 1px solid #5b57af;
     border-radius: 24px;
     margin: 1rem;
     box-shadow: rgba(255, 255, 255, 0.3) 0 5vw 6vw -8vw, rgba(255, 255, 255, 0) 0 4.5vw 5vw -6vw, rgba(50, 50, 80, 0.5) 0px 4vw 8vw -2vw, rgba(0, 0, 0, 0.8) 0px 4vw 5vw -3vw;
     overflow: hidden;
-    aspect-ratio: 9/12;
+    aspect-ratio: 1/1;
     width: 15rem;
     transition: .3s ease;
 
@@ -205,22 +236,23 @@ a{
     bottom: 0;
     left: 0;
     right: 0;
-    background-color: #25262681;
+    background-color: #252626a3;
     overflow: hidden;
     width: 100%;
-    height: 100%;
+    height: 40%;
     display: flex;
     flex-direction: column;
     justify-content: center;
-    align-items: center;
+    font-size: .8rem;
 
         h4,
         p{
             color: white;
             padding: .3rem .7rem;
-            text-align: center;
             text-shadow: 0 0 10px #0d0c0c;
+            margin-left: .4rem;
         }
+
     }
 
     &:hover{
