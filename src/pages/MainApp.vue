@@ -76,7 +76,7 @@ export default {
                 <h1>Tempo di partire!</h1>
                 <p>Trova l'appartamento perfetto per il tuo soggiorno</p>
                 <div class="search">
-                    <input type="text" name="city" id="city" placeholder="Dove vuoi andare?">
+                    <input type="text" name="city" id="city" placeholder="Dove vuoi andare?" @keydown.enter="goToSearchPage">
                     <i @click="goToSearchPage" class="fa-solid fa-search"></i>
                 </div>
             </div>
@@ -110,7 +110,7 @@ a{
 .jumbotron {
     text-align: center;
     background-image: linear-gradient(white, $primary-color);
-    height: 22rem;
+    height: 20rem;
     
     .jumbotron-content{
         padding: 3rem;
