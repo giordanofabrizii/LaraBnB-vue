@@ -87,7 +87,30 @@ export default {
             if (!event.target.closest(".dropdown")) {
                 this.isOpen = false;
             }
-        }
+        },
+        views: function(id){ // add a views to the apartment
+            // console.log("CIAO HO CLICCATO");
+
+            let data = {
+                ip: null,
+                apartment_id: id,
+            }
+
+            axios.get('https://api.ipify.org?format=json')
+            .then((response) => {
+                data.ip = response.data.ip // take the ip
+
+                // add a view in the db
+                axios.post('http://127.0.0.1:8000/api/apartments/view',{
+                    apartment_id: data.apartment_id,
+                    ip: data.ip,
+                })
+            })
+            .catch ((error) => {
+                console.error('Errore nel recupero dell\'IP:', error);
+            });
+            
+        },
     },
     mounted() {
         document.addEventListener("click", this.closeDropdownOnClickOutside);
@@ -159,7 +182,7 @@ export default {
         
         <ul class="apartment-list">
             <RouterLink v-for="apartment in store.apartments" :key="apartment.id"
-                :to="{ name: 'SingleApartment', params: { slug: apartment.slug } }">
+                :to="{ name: 'SingleApartment', params: { slug: apartment.slug } }" @click="views(apartment.id)">
                 <li class="apartment-item" >
                     <img :src="'http://127.0.0.1:8000/storage/' + apartment.image " alt="apartment image">
                     <div class="overlay">
