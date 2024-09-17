@@ -157,11 +157,16 @@ export default {
         </div>
 
         
-        <ul>
+        <ul class="apartment-list">
             <RouterLink v-for="apartment in store.apartments" :key="apartment.id"
                 :to="{ name: 'SingleApartment', params: { slug: apartment.slug } }">
-                <li>
-                    {{ apartment.name }} - {{ apartment.surface }} mq
+                <li class="apartment-item" >
+                    <img :src="'http://127.0.0.1:8000/storage/' + apartment.image " alt="apartment image">
+                    <div class="overlay">
+                        <h4>{{ apartment.name }}</h4>
+                        <p>{{ apartment.surface }} m2</p>
+                        <p>{{ apartment.address }}</p>                        
+                    </div>
                 </li>
             </RouterLink>
         </ul>
@@ -194,7 +199,7 @@ a {
 .dropdown {
     position: relative;
     display: inline-block;
-    margin: 3rem;
+    margin: 0 auto 1rem;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -289,6 +294,59 @@ a {
                 }
             }
         }
+    }
+}
+
+.apartment-list {
+    padding: 2rem;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+}
+
+.apartment-item {
+    position: relative;
+    border: 1px solid #060342;
+    border-radius: 24px;
+    margin: 1rem;
+    box-shadow: rgba(255, 255, 255, 0.3) 0 5vw 6vw -8vw, rgba(255, 255, 255, 0) 0 4.5vw 5vw -6vw, rgba(50, 50, 80, 0.5) 0px 4vw 8vw -2vw, rgba(0, 0, 0, 0.8) 0px 4vw 5vw -3vw;
+    overflow: hidden;
+    aspect-ratio: 9/12;
+    width: 15rem;
+    transition: .3s ease;
+
+    img{
+        height: 100%;
+        display: block;
+    }
+
+    .overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-color: #25262681;
+    overflow: hidden;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+        h4,
+        p{
+            color: white;
+            padding: .3rem .7rem;
+            text-align: center;
+            text-shadow: 0 0 10px #0d0c0c;
+        }
+    }
+
+    &:hover{
+        transform: scale(1.05);
     }
 }
 
