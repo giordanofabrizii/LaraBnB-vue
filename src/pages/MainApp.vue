@@ -8,40 +8,22 @@ export default {
             store,
             sponsoredApartments: [],
             searchQuery: '',
+            latitude : null,
+            longitude : null,
         };
     },
     methods: {
-        getApartment() {
+        goToSearchPage() {
             const citySearched = document.getElementById('city').value;
             const url = `https://api.tomtom.com/search/2/geocode/${encodeURIComponent(citySearched)}.json?key=9ndAiLQMA0GuE3FRyeJN3u42T2H4UMvU`;
-
-            fetch(url)
-            .then(response => response.json())
-            .then(data => {
-                if (data.results) {
-                    const latitude = data.results[0].position.lat;
-                    const longitude = data.results[0].position.lon;
-
-                    let filters = {
-                        'latitude': latitude,
-                        'longitude': longitude,
-                    }
-
-                    axios.get(`http://127.0.0.1:8000/api/apartments`,{
-                        params: filters,
-                    })
-                    .then((response)=> {
-                        this.store.apartments = response.data;
-                    })
-                } 
+            
+            axios.get(url)
+            .then((response) => {
+                this.latitude = response.data.results[0].position.lat;
+                this.longitude = response.data.results[0].position.lon;
+                this.$router.push({ name: 'search', query: { city: citySearched, latitude:this.latitude, longitude:this.longitude } }); // City is set in the query parameter
             })
-            .catch(error => {
-                console.error('Errore:', error);
-            });
-        },
-        goToSearchPage() {
-            this.getApartment();
-            this.$router.push({ name: 'search' });
+        
         },
         views: function(id){ // add a views to the apartment
             // console.log("CIAO HO CLICCATO");
