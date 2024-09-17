@@ -1,5 +1,6 @@
 <script>
 import axios from 'axios';
+import tt from '@tomtom-international/web-sdk-maps';
 import MapApp from '../components/MapApp.vue';
 import { store } from '../store';
 import { useRoute, useRouter } from 'vue-router';
@@ -11,6 +12,7 @@ export default {
     },
     data() {
         return {
+            isOpen: false,
             apartments: [],
             store,
             services: [
@@ -48,7 +50,6 @@ export default {
                 price: null,
                 services: [],
             },
-            isOpen: false,
             // isSearchExectuted: false,
 
         };
@@ -63,12 +64,8 @@ export default {
                     });
 
                     this.store.apartments = response.data;
-                    console.log(this.filters);
-
-                    // this.isSearchExectuted = true;
                 } catch (error) {
                     console.error('ERRORE', error);
-                    // this.isSearchExectuted = true;
                 }
             },
         updateUrlWithFilters(){
@@ -114,15 +111,52 @@ export default {
         },
     },
     mounted() {
-        const citySearched = this.$route.query.city;
-        if (citySearched) {
-            this.filters.latitude = this.$route.query.latitude;
-            this.filters.longitude = this.$route.query.longitude;
-            console.log(this.filters);
-        }
-        document.addEventListener("click", this.closeDropdownOnClickOutside);
-        this.cercaAppartamenti();
-        
+        this.$nextTick(() => {
+            const citySearched = this.$route.query.city; // salva la città cercata
+            if (citySearched) {
+                this.filters.latitude = this.$route.query.latitude; // salva latitudine e longitudine
+                this.filters.longitude = this.$route.query.longitude;
+            }
+            this.cercaAppartamenti(); // carica gli appartamenti con le coordinate
+
+            let position = {
+                lat: this.filters.latitude,
+                lng: this.filters.longitude,
+            };
+
+            if (this.filters.latitude != null) {
+                // Aggiungi la mappa
+                const map = tt.map({
+                    key: "9ndAiLQMA0GuE3FRyeJN3u42T2H4UMvU", // chiave API
+                    container: "map", // container della mappa
+                    center: [this.filters.longitude, this.filters.latitude], // Centra la mappa sui valori passati
+                    zoom: 14, // Zoom iniziale
+                });
+
+                setTimeout(() => {
+                    map.resize(); // Forza il resize della mappa
+                    console.log("Mappa caricata correttamente"); // Test
+                }, 200);
+
+                // Crea il marker nella posizione specificata
+                const marker = new tt.Marker()
+                    .setLngLat([position.lng, position.lat]) // Usa lat e long dalla query
+                    .setPopup(new tt.Popup({ offset: 5 }).setHTML(`
+                        <h1>${citySearched}</h1>
+                        <p>Latitudine: ${position.lat}, Longitudine: ${position.lng}</p>
+                    `)) // Popup personalizzato
+                    .addTo(map);
+
+                // Sposta la mappa sulla posizione con flyTo
+                map.flyTo({
+                    center: [position.lng, position.lat], // Centra sulla posizione
+                    zoom: 14 // Livello di zoom
+                });
+            }
+
+            // Aggiungi il listener per chiudere il dropdown quando clicchi fuori
+            document.addEventListener("click", this.closeDropdownOnClickOutside); 
+        });
     },
 };
 </script>
@@ -140,7 +174,7 @@ export default {
 
         <div class="dropdown">
             <button class="dropbtn" @click="openDropdown">Personalizza la ricerca!</button>
-            <div v-if="isOpen" class="dropdown-content">
+            <div v-show="isOpen === true" class="dropdown-content">
 
                 <MapApp :latitude="filters.latitude" :longitude="filters.longitude" @update-coordinates="updateCoordinates" />
 
@@ -391,4 +425,10 @@ a {
     padding-bottom: 3rem;
 }
 
+#map{
+        margin-top: 1rem;
+        height: 150px;
+        width: 300px;
+        
+    }
 </style>

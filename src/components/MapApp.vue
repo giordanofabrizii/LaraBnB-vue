@@ -37,6 +37,8 @@ export default {
                     zoom: 14,
                 });
 
+                console.log(firstResult.position)
+
                 markers.forEach(marker => marker.remove()); // remove the old marker
 
                 markers.length = 0;
@@ -48,6 +50,8 @@ export default {
                         <p>${firstResult.address.countrySubdivision || ''} ${firstResult.address.countrySecondarySubdivision || ''}</p>
                     `))
                     .addTo(map);
+
+                    
 
                     markers.push(marker);
 
@@ -88,8 +92,12 @@ export default {
 <style scoped lang="scss">
 
 #map{
-    width: 70%;
+    width: 400px;
     margin: 2rem auto;
     aspect-ratio: 1 / 1;
+}
+
+.mapboxgl-ctrl-attrib{
+    display: none !important;
 }
 </style>

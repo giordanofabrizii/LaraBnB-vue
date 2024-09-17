@@ -15,15 +15,18 @@ export default {
     methods: {
         goToSearchPage() {
             const citySearched = document.getElementById('city').value;
-            const url = `https://api.tomtom.com/search/2/geocode/${encodeURIComponent(citySearched)}.json?key=9ndAiLQMA0GuE3FRyeJN3u42T2H4UMvU`;
-            
-            axios.get(url)
-            .then((response) => {
-                this.latitude = response.data.results[0].position.lat;
-                this.longitude = response.data.results[0].position.lon;
-                this.$router.push({ name: 'search', query: { city: citySearched, latitude:this.latitude, longitude:this.longitude } }); // City is set in the query parameter
-            })
-        
+            if (citySearched.length > 0) {
+                const url = `https://api.tomtom.com/search/2/geocode/${encodeURIComponent(citySearched)}.json?key=9ndAiLQMA0GuE3FRyeJN3u42T2H4UMvU`;
+                
+                axios.get(url)
+                .then((response) => {
+                    this.latitude = response.data.results[0].position.lat;
+                    this.longitude = response.data.results[0].position.lon;
+                    this.$router.push({ name: 'search', query: { city: citySearched, latitude:this.latitude, longitude:this.longitude } }); // City is set in the query parameter
+                })
+            } else {
+                this.$router.push({ name: 'search'}); // City is set in the query parameter
+            }
         },
         views: function(id){ // add a views to the apartment
             // console.log("CIAO HO CLICCATO");
