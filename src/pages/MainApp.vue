@@ -85,6 +85,8 @@ export default {
                     <img :src="'http://127.0.0.1:8000/storage/' + apartment.image " alt="apartment image">
                     <div class="overlay">
                         <h4>{{ apartment.name }}</h4>
+                        <p>{{ apartment.surface }} m2</p>
+                        <p>{{ apartment.address }}</p>                        
                     </div>
                 </RouterLink>
             </div>
@@ -170,6 +172,7 @@ a{
     overflow: hidden;
     aspect-ratio: 9/12;
     width: 15rem;
+    transition: .3s ease;
 
     img{
         height: 100%;
@@ -181,24 +184,26 @@ a{
     bottom: 0;
     left: 0;
     right: 0;
-    background-color: #252626b1;
+    background-color: #25262681;
     overflow: hidden;
     width: 100%;
-    height: 0;
-    transition: .5s ease;
+    height: 100%;
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
 
-        h4{
+        h4,
+        p{
             color: white;
-            padding: 1rem;
+            padding: .3rem .7rem;
             text-align: center;
+            text-shadow: 0 0 10px #0d0c0c;
         }
     }
 
-    &:hover .overlay{
-        height: 100%;
+    &:hover{
+        transform: scale(1.05);
     }
 }
 </style>
