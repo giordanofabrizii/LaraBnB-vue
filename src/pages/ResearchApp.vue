@@ -132,18 +132,22 @@ export default {
                     <input id="longitude" v-model.number="filters.longitude" @input="updateUrlWithFilters" placeholder="Longitudine" type="hidden">
                 </div>
 
-                <!-- RADIUS -->
-                <div class="search-radius">
-                    <p>Raggio di ricerca:</p>
-                    <input v-model.number="filters.radius" min="1000" max="20000" @input="updateUrlWithFilters" placeholder="Longitudine" type="range">    
-                </div>                    
+                <div class="more-filters">
+                    <!-- RADIUS -->
+                    <div class="search-radius">
+                        <p>Raggio di ricerca:</p>
+                        <input v-model.number="filters.radius" min="1000" max="20000" @input="updateUrlWithFilters" placeholder="Longitudine" type="range">    
+                    </div>                    
 
-                <!-- SERVICES-->
-                <div class="services">
-                    <h2>Servizi</h2>
-                    <div v-for="service in services" :key="service.name">
-                        <input type="checkbox" :value="service.name" v-model="filters.services" @change="updateUrlWithFilters">
-                        <label>{{ service.name }}</label>
+                    <!-- SERVICES-->
+                    <div class="services">
+                        <h2>Servizi</h2>
+                        <div class="services-list">
+                            <article class="services-item" v-for="service in services" :key="service.name">
+                                <input type="checkbox" :value="service.name" v-model="filters.services" @change="updateUrlWithFilters">
+                                <label>{{ service.name }}</label>
+                            </article>
+                        </div>                        
                     </div>
                 </div>
 
@@ -162,7 +166,7 @@ export default {
             </RouterLink>
         </ul>
     
-        <div v-if="store.apartments.length === 0">
+        <div class="no-results" v-if="store.apartments.length === 0">
             <h3>Purtroppo non sono presenti appartamenti disponibili</h3>
             <p>Effettua una nuova ricerca</p>
         </div>
@@ -214,7 +218,7 @@ a {
     button{
         padding: 1rem 2rem 1rem 2rem;
         width: 15rem;
-        margin-bottom: 2rem;
+        margin: 2rem;
         border: none;
         border-radius: 2rem;
         background-color: #2f408e;
@@ -222,9 +226,10 @@ a {
         cursor: pointer;
         transition: all 0.3s ease;
         box-shadow: 0 4px 6px rgba(0, 0, 0, 0.181);
+        align-self: center;
 
         &:hover{
-            background-color: $primary-color;
+            background-color: #7288ee;
             transform: translateY(-2px);
         }
     }
@@ -233,7 +238,7 @@ a {
         background-color: #f9f9f9;
         min-width: 160px;
         width: 100%;
-        padding: 2rem;
+        padding: 0 1rem;
         box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
         z-index: 1;
         display: flex;
@@ -247,16 +252,64 @@ a {
             justify-content: center;
             align-items: center;
 
+                input{
+                padding: .2rem;
+                border-radius: 5px;
+                margin: 1rem;
+                
+            }
         }
 
-        input{
-            padding: .2rem;
-            border-radius: 5px;
-            margin: 1rem;
-            
-        }
+        .more-filters{
+            display: flex;
+            flex-direction: column;
 
+            .search-radius{
+                margin: 1rem auto;
+                align-self: center;
+
+                p{
+                    margin-bottom: .3rem;
+                }
+
+                input{
+                    width: 270px;
+                }
+            }
+
+            .services{
+                align-self: center;
+                display: flex;
+                flex-wrap: wrap;
+                flex-direction: column;
+                margin: 0 2rem;
+
+                h2{
+                    margin-left: 3rem;
+                    color: rgb(60, 60, 60);
+                }
+
+                .services-list{
+                    display: flex;
+                    flex-wrap: wrap;
+
+                    .services-item{
+                        margin: .7rem;
+
+                        input{
+                            margin-right: .3rem;
+                        }
+                    }
+                }
+            }
+        }
     }
+}
+
+.no-results{
+    color: white;
+    text-align: center;
+    padding-bottom: 3rem;
 }
 
 
