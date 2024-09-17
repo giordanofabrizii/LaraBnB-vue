@@ -13,7 +13,6 @@ export default {
     methods: {
         getApartment() {
             const citySearched = document.getElementById('city').value;
-            console.log(citySearched)
             const url = `https://api.tomtom.com/search/2/geocode/${encodeURIComponent(citySearched)}.json?key=9ndAiLQMA0GuE3FRyeJN3u42T2H4UMvU`;
 
             fetch(url)
@@ -43,6 +42,29 @@ export default {
         goToSearchPage() {
             this.getApartment();
             this.$router.push({ name: 'search' });
+        },
+        views: function(id){ // add a views to the apartment
+            // console.log("CIAO HO CLICCATO");
+
+            let data = {
+                ip: null,
+                apartment_id: id,
+            }
+
+            axios.get('https://api.ipify.org?format=json')
+            .then((response) => {
+                data.ip = response.data.ip // take the ip
+
+                // add a view in the db
+                axios.post('http://127.0.0.1:8000/api/apartments/view',{
+                    apartment_id: data.apartment_id,
+                    ip: data.ip,
+                })
+            })
+            .catch ((error) => {
+                console.error('Errore nel recupero dell\'IP:', error);
+            });
+            
         }
     },  
     mounted() {
@@ -52,7 +74,6 @@ export default {
         .then(response => response.json())
         .then(data => {
 
-            console.log("Dati ricevuti:", data);
             this.sponsoredApartments = data;
         })
         .catch(error => {
@@ -81,7 +102,7 @@ export default {
         <section class="sponsored-apartments">
             <h2>Consigliati per te</h2>
             <div class="apartment-list">
-                <RouterLink v-for="apartment in sponsoredApartments" :key="apartment.id" class="apartment-item" :to="{name: 'SingleApartment', params: {slug: apartment.slug}}">
+                <RouterLink v-for="apartment in sponsoredApartments" :key="apartment.id" class="apartment-item" :to="{name: 'SingleApartment', params: {slug: apartment.slug}}" @click="views(apartment.id)">
                     <img :src="'http://127.0.0.1:8000/storage/' + apartment.image " alt="apartment image">
                     <div class="overlay">
                         <h4>{{ apartment.name }}</h4>

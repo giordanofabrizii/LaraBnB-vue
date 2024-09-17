@@ -176,7 +176,7 @@ export default{
                     <input type="text" name="email" id="email" v-model="message.email" placeholder="Inserisci la tua mail">
                     <div class="error"></div>
                     <label for="text">Messaggio*:</label>
-                    <input type="text" name="text"  id="text" v-model="message.text" placeholder="Scrivi qui il tuo messaggio" rows="3">
+                    <textarea rows="4" name="text"  id="text" v-model="message.text" placeholder="Scrivi qui il tuo messaggio"></textarea>
                     <div class="error"></div>
                     <button @click="sendMessage">Invia</button>
                 </div>
@@ -288,7 +288,12 @@ div.container{
             font-size: 2rem;
         }
 
-        input{
+        textarea {
+            resize: none;
+        }
+
+        input,
+        textarea{
             width: 100%;
             padding: .5rem;
             border: 1px solid white;
