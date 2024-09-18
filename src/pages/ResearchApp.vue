@@ -55,61 +55,86 @@ export default {
         };
     },
     methods: {
-        async cercaAppartamenti() {
-                try {
-                    this.updateUrlWithFilters();
+    async cercaAppartamenti() {
+        try {
+            this.updateUrlWithFilters();
 
-                    const response = await axios.get('http://127.0.0.1:8000/api/apartments', { // take the apartments
-                        params: this.filters,
-                    });
-
-                    this.store.apartments = response.data;
-                } catch (error) {
-                    console.error('ERRORE', error);
-                }
-            },
-        updateUrlWithFilters(){
-            const query = Object.assign({}, this.filters);
-            this.$router.push({ query });
-        },
-        updateCoordinates(coordinates) {
-            this.filters.latitude = coordinates.lat;
-            this.filters.longitude = coordinates.lng;
-        },
-        
-        openDropdown(){
-            this.isOpen = true;
-        },
-        //per chiudere il dropdown quando si clicca fuori dal div
-        closeDropdownOnClickOutside(){
-            if (!event.target.closest(".dropdown")) {
-                this.isOpen = false;
-            }
-        },
-        views: function(id){ // add a views to the apartment
-            // console.log("CIAO HO CLICCATO");
-
-            let data = {
-                ip: null,
-                apartment_id: id,
-            }
-
-            axios.get('https://api.ipify.org?format=json')
-            .then((response) => {
-                data.ip = response.data.ip // take the ip
-
-                // add a view in the db
-                axios.post('http://127.0.0.1:8000/api/apartments/view',{
-                    apartment_id: data.apartment_id,
-                    ip: data.ip,
-                })
-            })
-            .catch ((error) => {
-                console.error('Errore nel recupero dell\'IP:', error);
+            const response = await axios.get('http://127.0.0.1:8000/api/apartments', {
+                params: this.filters,
             });
-            
-        },
+
+            // Calcola la distanza per ogni appartamento
+            this.store.apartments = response.data.map(apartment => {
+                if (this.filters.latitude && this.filters.longitude) {
+                    apartment.distance = this.calculateDistance(
+                        this.filters.latitude,
+                        this.filters.longitude,
+                        apartment.latitude,
+                        apartment.longitude
+                    );
+                } else {
+                    apartment.distance = null;
+                }
+                return apartment;
+            });
+        } catch (error) {
+            console.error('ERRORE', error);
+        }
     },
+    updateUrlWithFilters(){
+        const query = Object.assign({}, this.filters);
+        this.$router.push({ query });
+    },
+    updateCoordinates(coordinates) {
+        this.filters.latitude = coordinates.lat;
+        this.filters.longitude = coordinates.lng;
+    },
+    openDropdown(){
+        this.isOpen = true;
+    },
+    closeDropdownOnClickOutside(){
+        if (!event.target.closest(".dropdown")) {
+            this.isOpen = false;
+        }
+    },
+    calculateDistance(lat1, lon1, lat2, lon2) {
+        const R = 6371; // Raggio della terra in km
+        const dLat = this.degToRad(lat2 - lat1);
+        const dLon = this.degToRad(lon2 - lon1);
+        const a = 
+            Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+            Math.cos(this.degToRad(lat1)) * Math.cos(this.degToRad(lat2)) *
+            Math.sin(dLon / 2) * Math.sin(dLon / 2);
+        const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+        const distance = R * c; // Distanza in km
+        return distance;
+    },
+    // Funzione per convertire gradi in radianti
+    degToRad(deg) {
+        return deg * (Math.PI / 180);
+    },
+    views: function(id) {
+        let data = {
+            ip: null,
+            apartment_id: id,
+        };
+
+        axios.get('https://api.ipify.org?format=json')
+        .then((response) => {
+            data.ip = response.data.ip; // Prende l'ip dell'utente
+
+            // aggiunge una view all'appartamento
+            axios.post('http://127.0.0.1:8000/api/apartments/view', {
+                apartment_id: data.apartment_id,
+                ip: data.ip,
+            });
+        })
+        .catch((error) => {
+            console.error('Errore nel recupero dell\'IP:', error);
+        });
+    },
+},
+
     mounted() {
         this.$nextTick(() => {
             const citySearched = this.$route.query.city; // salva la città cercata
@@ -234,7 +259,8 @@ export default {
                     <div class="overlay">
                         <h4>{{ apartment.name }}</h4>
                         <p>{{ apartment.surface }} m2</p>
-                        <p>{{ apartment.address }}</p>                        
+                        <p>{{ apartment.address }}</p>
+                        <p v-if="apartment.distance !== null">Distanza: {{ apartment.distance.toFixed(2) }} km</p> <!-- Mostra la distanza -->                        
                     </div>
                 </li>
             </RouterLink>
