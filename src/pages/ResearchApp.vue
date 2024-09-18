@@ -63,7 +63,7 @@ export default {
                 params: this.filters,
             });
 
-            // Calcola la distanza per ogni appartamento
+            // Calculate the distance for each apartment
             this.store.apartments = response.data.map(apartment => {
                 if (this.filters.latitude && this.filters.longitude) {
                     apartment.distance = this.calculateDistance(
@@ -98,7 +98,7 @@ export default {
         }
     },
     calculateDistance(lat1, lon1, lat2, lon2) {
-        const R = 6371; // Raggio della terra in km
+        const R = 6371; // Earth's radius in km
         const dLat = this.degToRad(lat2 - lat1);
         const dLon = this.degToRad(lon2 - lon1);
         const a = 
@@ -106,10 +106,10 @@ export default {
             Math.cos(this.degToRad(lat1)) * Math.cos(this.degToRad(lat2)) *
             Math.sin(dLon / 2) * Math.sin(dLon / 2);
         const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-        const distance = R * c; // Distanza in km
+        const distance = R * c; // distance in km
         return distance;
     },
-    // Funzione per convertire gradi in radianti
+    // Function to convert degrees to radians
     degToRad(deg) {
         return deg * (Math.PI / 180);
     },
@@ -121,9 +121,9 @@ export default {
 
         axios.get('https://api.ipify.org?format=json')
         .then((response) => {
-            data.ip = response.data.ip; // Prende l'ip dell'utente
+            data.ip = response.data.ip; // Takes the IP address from the response
 
-            // aggiunge una view all'appartamento
+            // Adds a view to the apartment
             axios.post('http://127.0.0.1:8000/api/apartments/view', {
                 apartment_id: data.apartment_id,
                 ip: data.ip,
@@ -137,49 +137,48 @@ export default {
 
     mounted() {
         this.$nextTick(() => {
-            const citySearched = this.$route.query.city; // salva la città cercata
+            const citySearched = this.$route.query.city; // Saves the city searched
             if (citySearched) {
-                this.filters.latitude = this.$route.query.latitude; // salva latitudine e longitudine
-                this.filters.longitude = this.$route.query.longitude;
+                this.filters.latitude = this.$route.query.latitude; // Saves the latitude 
+                this.filters.longitude = this.$route.query.longitude; // Saves the longitude
             }
-            this.cercaAppartamenti(); // carica gli appartamenti con le coordinate
-
+            this.cercaAppartamenti(); // Uploads the apartments
             let position = {
                 lat: this.filters.latitude,
                 lng: this.filters.longitude,
             };
 
             if (this.filters.latitude != null) {
-                // Aggiungi la mappa
+                // Add the map to the page
                 const map = tt.map({
-                    key: "9ndAiLQMA0GuE3FRyeJN3u42T2H4UMvU", // chiave API
-                    container: "map", // container della mappa
-                    center: [this.filters.longitude, this.filters.latitude], // Centra la mappa sui valori passati
-                    zoom: 14, // Zoom iniziale
+                    key: "9ndAiLQMA0GuE3FRyeJN3u42T2H4UMvU", // API's key
+                    container: "map", // Map's container
+                    center: [this.filters.longitude, this.filters.latitude], // 
+                    zoom: 14, // Initial zoom
                 });
 
                 setTimeout(() => {
-                    map.resize(); // Forza il resize della mappa
+                    map.resize(); // Resize the map after it's loaded
                     console.log("Mappa caricata correttamente"); // Test
                 }, 200);
 
                 // Crea il marker nella posizione specificata
                 const marker = new tt.Marker()
-                    .setLngLat([position.lng, position.lat]) // Usa lat e long dalla query
+                    .setLngLat([position.lng, position.lat]) // Uses the position saved
                     .setPopup(new tt.Popup({ offset: 5 }).setHTML(`
                         <h1>${citySearched}</h1>
                         <p>Latitudine: ${position.lat}, Longitudine: ${position.lng}</p>
-                    `)) // Popup personalizzato
+                    `)) // Popup personalized
                     .addTo(map);
 
-                // Sposta la mappa sulla posizione con flyTo
+                // Move the map to the position with flyTo
                 map.flyTo({
-                    center: [position.lng, position.lat], // Centra sulla posizione
-                    zoom: 14 // Livello di zoom
+                    center: [position.lng, position.lat], // Center on the position
+                    zoom: 14 
                 });
             }
 
-            // Aggiungi il listener per chiudere il dropdown quando clicchi fuori
+            // Add a listener for closing the dropdown when clicking outside
             document.addEventListener("click", this.closeDropdownOnClickOutside); 
         });
     },
