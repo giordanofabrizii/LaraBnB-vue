@@ -12,6 +12,7 @@ export default {
     },
     data() {
         return {
+            citySearched: '',
             isOpen: false,
             apartments: [],
             store,
@@ -46,7 +47,7 @@ export default {
                 bed_number: null,
                 latitude: null,
                 longitude: null,
-                radius: null,
+                radius: 10000,
                 price: null,
                 services: [],
             },
@@ -55,6 +56,36 @@ export default {
         };
     },
     methods: {
+        increaseValue(field) {
+            if (field === 'surface_min'){
+                this.filters[field] += 10;
+                this.updateUrlWithFilters()
+            }
+            else if(field == 'surface_max'){
+                this.filters[field] += 10;
+                this.updateUrlWithFilters()
+            }
+            else{
+                this.filters[field] += 1; // Incrementa il valore di surface_min
+                this.updateUrlWithFilters();   // Aggiorna l'URL con i filtri
+            }
+            },
+        decreaseValue(field) {
+            if (this.filters[field] > 0) {
+                if (field == 'surface_min'){
+                    this.filters[field] -= 10; // Decrementa il valore di surface_min (ma non sotto zero)
+                    this.updateUrlWithFilters();   // Aggiorna l'URL con i filtri
+                } else if(field == 'surface_max') {
+                    this.filters[field] -= 10; // Decrementa il valore di surface_min (ma non sotto zero)
+                    this.updateUrlWithFilters();   // Aggiorna l'URL con i filtri
+                }
+                else{
+                    this.filters[field] -= 1; // Decrementa il valore di surface_min (ma non sotto zero)
+                    this.updateUrlWithFilters();   // Aggiorna l'URL con i filtri
+
+                }
+            }
+        },
         async cercaAppartamenti() {
                 try {
                     this.updateUrlWithFilters();
@@ -68,7 +99,7 @@ export default {
                     console.error('ERRORE', error);
                 }
             },
-        updateUrlWithFilters(){
+        updateUrlWithFilters(field){
             const query = Object.assign({}, this.filters);
             this.$router.push({ query });
         },
@@ -77,15 +108,6 @@ export default {
             this.filters.longitude = coordinates.lng;
         },
         
-        openDropdown(){
-            this.isOpen = true;
-        },
-        //per chiudere il dropdown quando si clicca fuori dal div
-        closeDropdownOnClickOutside(){
-            if (!event.target.closest(".dropdown")) {
-                this.isOpen = false;
-            }
-        },
         views: function(id){ // add a views to the apartment
             // console.log("CIAO HO CLICCATO");
 
@@ -109,11 +131,17 @@ export default {
             });
             
         },
+        capitalizeFirstLetter(city) {
+        if (!city) return '';
+        city = city.toLowerCase(); // Converti tutto in minuscolo
+        return city.charAt(0).toUpperCase() + city.slice(1); // Prima lettera maiuscola
+        }
     },
     mounted() {
         this.$nextTick(() => {
             const citySearched = this.$route.query.city; // salva la città cercata
             if (citySearched) {
+                this.citySearched = citySearched; // Salva la città nel data
                 this.filters.latitude = this.$route.query.latitude; // salva latitudine e longitudine
                 this.filters.longitude = this.$route.query.longitude;
             }
@@ -153,97 +181,164 @@ export default {
                     zoom: 14 // Livello di zoom
                 });
             }
-
-            // Aggiungi il listener per chiudere il dropdown quando clicchi fuori
-            document.addEventListener("click", this.closeDropdownOnClickOutside); 
         });
+    },
+    computed: {
+        // Proprietà calcolata per formattare il nome della città
+        formattedCityName() {
+            return this.capitalizeFirstLetter(this.citySearched);
+        },
     },
 };
 </script>
 
 <template>
     <div id="research-app">
-        <div v-if="this.citySearched">
-            <h2>{{ this.citySearched }}</h2>
-        </div>
-        <h1>Appartamenti</h1>
 
-        <section class="first-results">
+        <aside>
+            <section  class="side">
 
-        </section>
-
-        <div class="dropdown">
-            <button class="dropbtn" @click="openDropdown">Personalizza la ricerca!</button>
-            <div v-show="isOpen === true" class="dropdown-content">
-
+                
                 <MapApp :latitude="filters.latitude" :longitude="filters.longitude" @update-coordinates="updateCoordinates" />
-
-                <div class="filters">
-            
-
+                <section class="dropdown-content">
+                    
+                    
                     <!-- SURFACE SELECTOR -->
-                    <input v-model.number="filters.surface_min" @input="updateUrlWithFilters" placeholder="Superficie minima" type="number">
-                    <input v-model.number="filters.surface_max" @input="updateUrlWithFilters" placeholder="Superficie massima" type="number">
+                        <!-- MIN SURFACE -->
+                    <div class="wholeInput">
+                        <label for="minSurface">Superficie Minima(m&sup2;)</label>
+                        <div class="custom-number-input">
+                        <button type="button" class="decrement" @click="decreaseValue('surface_min')">-</button>
+                        <input v-model.number="filters.surface_min" @input="updateUrlWithFilters" placeholder="0" type="number" id="minSurface">
+                        <button type="button" class="increment" @click="increaseValue('surface_min')">+</button>
+                        </div>
+                    </div>
+                    
+                        <!-- MAX SURFACE -->
+                    <div class="wholeInput">
+                        <label for="maxSurface">Superficie Massima(m&sup2;)</label>
+                        <div class="custom-number-input">
+                        <button type="button" class="decrement" @click="decreaseValue('surface_max')">-</button>
+                        <input v-model.number="filters.surface_max" @input="updateUrlWithFilters" placeholder="0" type="number" id="maxSurface">
+                        <button type="button" class="increment" @click="increaseValue('surface_max')">+</button>
+                        </div>
+                    </div>
+                    
 
+                    
                     <!-- ROOM MIN VALUE -->
-                    <input v-model.number="filters.room_number" @input="updateUrlWithFilters" placeholder="Numero di stanze minime" type="text">
+                    <div class="wholeInput">
+                        <label for="room">Numero di stanze</label>
+                        <div class="custom-number-input">
+                        <button type="button" class="decrement" @click="decreaseValue('room_number')">-</button>
+                        <input v-model.number="filters.room_number" @input="updateUrlWithFilters" placeholder="0" type="number" id="room">
+                        <button type="button" class="increment" @click="increaseValue('room_number')">+</button>
+                        </div>
+                    </div>
 
+                    
                     <!-- BATH MIN VALUE -->
-                    <input v-model.number="filters.bath_number" @input="updateUrlWithFilters" placeholder="Numero di bagni minimi" type="text">
+                    <div class="wholeInput">
+                        <label for="bath">Numero di bagni</label>
+                        <div class="custom-number-input">
+                        <button type="button" class="decrement" @click="decreaseValue('bath_number')">-</button>
+                        <input v-model.number="filters.bath_number" @input="updateUrlWithFilters" placeholder="0" type="number" id="bath">
+                        <button type="button" class="increment" @click="increaseValue('bath_number')">+</button>
+                        </div>
+                    </div>
 
+                    
                     <!-- BED MIN VALUE -->
-                    <input v-model.number="filters.bed" @input="updateUrlWithFilters" placeholder="Numero minimo di persone ammesse" type="text">
+                    <div class="wholeInput">
+                        <label for="bed">Numero di letti</label>
+                        <div class="custom-number-input">
+                        <button type="button" class="decrement" @click="decreaseValue('bed_number')">-</button>
+                        <input v-model.number="filters.bed_number" @input="updateUrlWithFilters" placeholder="0" type="number" id="bed">
+                        <button type="button" class="increment" @click="increaseValue('bed_number')">+</button>
+                        </div>
+                    </div>
 
+                
                     <!-- LATITUDE VALUE -->
                     <input id="latitude" v-model.number="filters.latitude" @input="updateUrlWithFilters" placeholder="Latitudine" type="hidden">
-
+                    
                     <!-- LONGITUDE VALUE -->
                     <input id="longitude" v-model.number="filters.longitude" @input="updateUrlWithFilters" placeholder="Longitudine" type="hidden">
-                </div>
+                </section>
 
-                <div class="more-filters">
-                    <!-- RADIUS -->
+                
+                <!-- RADIUS -->
+                <div class="radius">
+                    <h2 class="radius-title">Raggio di ricerca:</h2>
                     <div class="search-radius">
-                        <p>Raggio di ricerca:</p>
-                        <input v-model.number="filters.radius" min="1000" max="20000" @input="updateUrlWithFilters" placeholder="Longitudine" type="range">    
+                        <input v-model.number="filters.radius" min="1000" max="20000" @input="updateUrlWithFilters"  type="range">
+                        <span>{{ (filters.radius / 1000).toFixed(1) }} km</span>
                     </div>                    
-
+                </div>
+                
+                <div class="more-filters">
                     <!-- SERVICES-->
                     <div class="services">
                         <h2>Servizi</h2>
                         <div class="services-list">
                             <article class="services-item" v-for="service in services" :key="service.name">
-                                <input type="checkbox" :value="service.name" v-model="filters.services" @change="updateUrlWithFilters">
-                                <label>{{ service.name }}</label>
+                                <label class="checkbox">
+                                <input type="checkbox" class="checkbox__trigger visuallyhidden":value="service.name" v-model="filters.services" @change="updateUrlWithFilters">
+                                <span class="checkbox__symbol">
+                                    <svg aria-hidden="true" class="icon-checkbox" width="28px" height="28px" viewBox="0 0 28 28" version="1" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M4 14l8 7L24 7"></path>
+                                    </svg>
+                                </span>
+                                <p class="checkbox__textwrapper">{{ service.name }}</p>
+                            </label>
                             </article>
                         </div>                        
                     </div>
                 </div>
-
-                <button id="search-btn" @click="cercaAppartamenti">Carica Appartamenti</button>
-
-            </div>
-        </div>
-
-        
-        <ul class="apartment-list">
-            <RouterLink v-for="apartment in store.apartments" :key="apartment.id"
+                <button class="search" id="search-btn" @click="cercaAppartamenti">Carica Appartamenti</button>
+                
+            </section>
+        </aside>
+            
+        <section class="apartments">
+                
+            <h1 class="city">{{formattedCityName}}: {{ store.apartments.length }} strutture trovate</h1>
+            
+            <ul class="apartment-list">
+                <RouterLink v-for="apartment in store.apartments" :key="apartment.id"
                 :to="{ name: 'SingleApartment', params: { slug: apartment.slug } }" @click="views(apartment.id)">
                 <li class="apartment-item" >
-                    <img :src="'http://127.0.0.1:8000/storage/' + apartment.image " alt="apartment image">
-                    <div class="overlay">
-                        <h4>{{ apartment.name }}</h4>
-                        <p>{{ apartment.surface }} m2</p>
-                        <p>{{ apartment.address }}</p>                        
-                    </div>
-                </li>
-            </RouterLink>
-        </ul>
-    
-        <div class="no-results" v-if="store.apartments.length === 0">
-            <h3>Purtroppo non sono presenti appartamenti disponibili</h3>
-            <p>Effettua una nuova ricerca</p>
-        </div>
+                        <img :src="'http://127.0.0.1:8000/storage/' + apartment.image " alt="apartment image">
+                        <div class="overlay">
+                            <h1>{{ apartment.name }}</h1>
+                            <p>{{ apartment.description }}</p>  
+                            <p>{{ apartment.address }}</p>   
+                            <div class="info">
+                                <div>
+                                    <p>Stanze: {{ apartment.n_room }}</p>
+                                    <p>Bagni: {{ apartment.n_bath }}</p>
+                                    <p>Superficie: {{ apartment.surface }} m&sup2;</p>
+                                </div>
+                                <div class="last-info">
+                                    <div class="person">
+                                        <p>1 notte, {{ apartment.n_bed }} <span v-if="apartment.n_bed == 1">Persona</span>
+                                        <span v-if="apartment.n_bed > 1">Persone</span></p>
+                                        <i v-for="bed in apartment.n_bed" :key="bed" class="fas fa-user"></i>
+                                    </div>
+                                    <strong> &euro; {{ apartment.price}}</strong>
+                                    <p>Include tasse e costi</p>
+                                </div>
+                            </div>                     
+                        </div>
+                    </li>
+                </RouterLink>
+            </ul>
+        
+            <div class="no-results" v-if="store.apartments.length === 0">
+                <h3>Purtroppo non sono presenti appartamenti disponibili</h3>
+                <p>Effettua una nuova ricerca</p>
+            </div>
+        </section>
     </div>
 </template>
 
@@ -257,25 +352,58 @@ a {
 }
 
 #research-app{
-
-    h1{
-        color: white;
-        text-align: center;
-        margin: 1rem;
-    }
+    display: flex;
+    padding: 2rem;
+    width: 100vw;
 }
 
-.dropdown {
-    position: relative;
-    display: inline-block;
+.side {
+    max-width: 336px;
     margin: 0 auto 1rem;
     display: flex;
     flex-direction: column;
-    justify-content: center;
-    align-items: center;
     transition: all 0.3s ease;
+    background-color: white;
+    border-radius: 1rem;
+    border: 1px solid rgb(214, 214, 214);
 
-    button{
+    .custom-number-input {
+    display: flex;
+    align-items: center;
+    border: 1px solid #ccc;
+    border-radius: .5rem;
+    }
+
+    .wholeInput{
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 1rem;
+    }
+
+    button.increment,
+    button.decrement {
+    border-radius:.5rem;
+    width: 30px;
+    height: 30px;
+    background-color: white;
+    border: none;
+    cursor: pointer;
+    }
+
+    button.increment:hover,
+    button.decrement:hover {
+    background-color: #ddd;
+    }
+
+    input[type="number"] {
+    width: 2rem;
+    text-align: center;
+    border: none;
+    -webkit-appearance: none; /* Nascondi le frecce in Chrome */
+    -moz-appearance: textfield; /* Nascondi le frecce in Firefox */
+    }
+
+    button.search{
         padding: 1rem 2rem 1rem 2rem;
         width: 15rem;
         margin: 2rem;
@@ -295,15 +423,9 @@ a {
     }
 
     .dropdown-content {
-        background-color: #f9f9f9;
-        min-width: 160px;
-        width: 100%;
-        padding: 0 1rem;
-        box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
-        z-index: 1;
-        display: flex;
-        flex-direction: column;
-        flex-wrap: wrap;
+        padding: 1rem;
+        border-top: solid 1px rgb(214, 214, 214);
+        border-bottom: solid 1px rgb(214, 214, 214);
 
 
         .filters{
@@ -311,112 +433,136 @@ a {
             flex-wrap: wrap;
             justify-content: center;
             align-items: center;
+            margin: 1rem;
 
                 input{
                 padding: .2rem;
                 border-radius: 5px;
                 margin: 1rem;
-                
-            }
+                }
         }
 
+        
+        
+    }
         .more-filters{
             display: flex;
             flex-direction: column;
+            padding: 1rem;
+            border-bottom: 1px solid rgb(214, 214, 214);
+        }
+    }
+    .radius{
+        border-bottom: 1px solid rgb(214, 214, 214);
+        .search-radius{
+            margin: 1rem auto;
+            align-self: center;
 
-            .search-radius{
-                margin: 1rem auto;
-                align-self: center;
-
-                p{
-                    margin-bottom: .3rem;
-                }
-
-                input{
-                    width: 270px;
-                }
-            }
-
-            .services{
-                align-self: center;
-                display: flex;
-                flex-wrap: wrap;
-                flex-direction: column;
-                margin: 0 2rem;
-
-                h2{
-                    margin-left: 3rem;
-                    color: rgb(60, 60, 60);
-                }
-
-                .services-list{
-                    display: flex;
-                    flex-wrap: wrap;
-
-                    .services-item{
-                        margin: .7rem;
-
-                        input{
-                            margin-right: .3rem;
-                        }
-                    }
-                }
+            p{
+                margin-bottom: .3rem;
             }
         }
     }
+
+.apartments{
+    width: 100%;
+
+h1.city{
+    color: white;
+    text-align: center;
 }
 
 .apartment-list {
     padding: 2rem;
     display: flex;
-    flex-wrap: wrap;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
     gap: 1rem;
+    width: 100%;
 }
 
 .apartment-item {
-    position: relative;
+    display: flex;
     border: 1px solid #060342;
     border-radius: 24px;
     margin: 1rem;
+    padding: 1rem;
     box-shadow: rgba(255, 255, 255, 0.3) 0 5vw 6vw -8vw, rgba(255, 255, 255, 0) 0 4.5vw 5vw -6vw, rgba(50, 50, 80, 0.5) 0px 4vw 8vw -2vw, rgba(0, 0, 0, 0.8) 0px 4vw 5vw -3vw;
     overflow: hidden;
-    aspect-ratio: 9/12;
-    width: 15rem;
     transition: .3s ease;
+    background-color: #bebebe9a;
+    width: 100%;
+
+    a{
+        width: 100%;
+    }
 
     img{
-        height: 100%;
+        height: 20rem;
         display: block;
+        border-radius: 24px;
+        aspect-ratio: 1/1;
     }
 
     .overlay {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    background-color: #25262681;
     overflow: hidden;
     width: 100%;
     height: 100%;
     display: flex;
     flex-direction: column;
-    justify-content: center;
-    align-items: center;
+        
+        h1{
+        color: white;
+        margin: 1rem;
+        }
 
-        h4,
         p{
             color: white;
-            padding: .3rem .7rem;
-            text-align: center;
-            text-shadow: 0 0 10px #0d0c0c;
+            padding-left: 1rem;
+            padding-bottom: 1rem;
+        }
+
+        .info{
+            margin-left: 1rem;
+            display: flex;
+            justify-content: space-between;
+            border-left: 4px solid #528fff81;
+            p{
+                padding-left: .5rem;
+            }
+            .last-info{
+                text-align: end;
+                p{
+                    padding-bottom: 0;
+                }
+
+                p:last-child{
+                    font-size: .7rem;
+                }
+
+                strong{
+                    font-size: 1.5rem;
+                }
+            }
         }
     }
 
+    
     &:hover{
         transform: scale(1.05);
     }
+}
+}
+.services{
+    display: flex;
+    flex-direction: column;
+    
+    h2{
+
+        margin-bottom: 1rem;
+    }
+        
 }
 
 .no-results{
@@ -426,9 +572,145 @@ a {
 }
 
 #map{
-        margin-top: 1rem;
+        margin: 1rem;
         height: 150px;
         width: 300px;
         
     }
+
+    .radius-title{
+        
+        margin: .5rem 1rem;
+    }
+    .search-radius {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-bottom: 1rem;
+    }
+
+.search-radius input[type="range"] {
+    margin: 0 10px;
+    cursor: pointer;
+    }
+
+.search-radius span {
+    font-weight: bold;
+    margin-left: 1rem;
+    }
+
+    //checkbox CSS
+    .services-list {
+        --s-xsmall: 0.625em;
+        --s-small: 1.2em;
+        --border-width: 1px;
+        --c-primary: #000000f5;
+        --c-primary-20-percent-opacity: rgba(0, 0, 0, 0.2);
+        --c-primary-10-percent-opacity: rgba(0, 0, 0, 0.1);
+        --t-base: 0.4s;
+        --t-fast: 0.2s;
+        --e-in: ease-in;
+        --e-out: cubic-bezier(.11,.29,.18,.98);
+        }
+    
+        .services-list .visuallyhidden {
+        border: 0;
+        clip: rect(0 0 0 0);
+        height: 1px;
+        margin: -1px;
+        overflow: hidden;
+        padding: 0;
+        position: absolute;
+        width: 1px;
+        }
+    
+        .services-list .checkbox {
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
+        margin-bottom: .5rem;
+        }
+        .services-list .checkbox + .checkbox {
+        margin-top: var(--s-small);
+        }
+        .services-list .checkbox__symbol {
+        display: inline-block;
+        display: flex;
+        margin-right: calc(var(--s-small) * 0.7);
+        border: var(--border-width) solid var(--c-primary);
+        position: relative;
+        border-radius: 0.1em;
+        width: 1.5em;
+        height: 1.5em;
+        transition: box-shadow var(--t-base) var(--e-out), background-color var(--t-base);
+        box-shadow: 0 0 0 0 var(--c-primary-10-percent-opacity);
+        cursor: pointer;
+        }
+        .services-list .checkbox__symbol:after {
+        content: "";
+        position: absolute;
+        top: 0.5em;
+        left: 0.5em;
+        width: 0.25em;
+        height: 0.25em;
+        background-color: var(--c-primary-20-percent-opacity);
+        opacity: 0;
+        border-radius: 3em;
+        transform: scale(1);
+        transform-origin: 50% 50%;
+        }
+        .services-list .checkbox .icon-checkbox {
+        width: 1em;
+        height: 1em;
+        margin: auto;
+        fill: none;
+        stroke-width: 3;
+        stroke: currentColor;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+        stroke-miterlimit: 10;
+        color: var(--c-primary);
+        display: inline-block;
+        }
+        .services-list .checkbox .icon-checkbox path {
+        transition: stroke-dashoffset var(--t-fast) var(--e-in);
+        stroke-dasharray: 30px, 31px;
+        stroke-dashoffset: 31px;
+        }
+        .services-list .checkbox__textwrapper {
+        margin: 0;
+        }
+        .services-list .checkbox__trigger:checked + .checkbox__symbol:after {
+        -webkit-animation: ripple-33 1.5s var(--e-out);
+                animation: ripple-33 1.5s var(--e-out);
+        }
+        .services-list .checkbox__trigger:checked + .checkbox__symbol .icon-checkbox path {
+        transition: stroke-dashoffset var(--t-base) var(--e-out);
+        stroke-dashoffset: 0px;
+        }
+        .services-list .checkbox__trigger:focus + .checkbox__symbol {
+        box-shadow: 0 0 0 0.25em var(--c-primary-20-percent-opacity);
+        }
+    
+        @-webkit-keyframes ripple-33 {
+        from {
+            transform: scale(0);
+            opacity: 1;
+        }
+        to {
+            opacity: 0;
+            transform: scale(20);
+        }
+        }
+    
+        @keyframes ripple-33 {
+        from {
+            transform: scale(0);
+            opacity: 1;
+        }
+        to {
+            opacity: 0;
+            transform: scale(20);
+        }
+        }
 </style>
