@@ -212,8 +212,10 @@ a{
     transition: .3s ease;
 
     img{
+        width: 100%;
         height: 100%;
         display: block;
+        object-fit: cover;
     }
 
     .overlay {
