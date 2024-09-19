@@ -74,11 +74,11 @@ export default {
             markers.length = 0;
         });
 
-        searchBox.on('tomtom.searchbox.noresults', function () { // whene no results are found
+        searchBox.on('tomtom.searchbox.noresults', function () { // when no results are found
             console.log("Nessun risultato trovato per questa ricerca.");
         });
 
-        searchBox.on('tomtom.searchbox.error', function (error) { // whene the search results in error
+        searchBox.on('tomtom.searchbox.error', function (error) { // when the search results in error
             console.error("Errore durante la ricerca:", error);
         });
     }

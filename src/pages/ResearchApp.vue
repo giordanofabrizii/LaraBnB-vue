@@ -56,6 +56,7 @@ export default {
         };
     },
     methods: {
+
         increaseValue(field) {
             if (field === 'surface_min'){
                 this.filters[field] += 10;
@@ -90,95 +91,132 @@ export default {
                 try {
                     this.updateUrlWithFilters();
 
-                    const response = await axios.get('http://127.0.0.1:8000/api/apartments', { // take the apartments
-                        params: this.filters,
-                    });
+            const response = await axios.get('http://127.0.0.1:8000/api/apartments', {
+                params: this.filters,
+            });
 
-                    this.store.apartments = response.data;
-                } catch (error) {
-                    console.error('ERRORE', error);
+            // Calculate the distance for each apartment
+            this.store.apartments = response.data.map(apartment => {
+                if (this.filters.latitude && this.filters.longitude) {
+                    apartment.distance = this.calculateDistance(
+                        this.filters.latitude,
+                        this.filters.longitude,
+                        apartment.latitude,
+                        apartment.longitude
+                    );
+                } else {
+                    apartment.distance = null;
                 }
+
             },
+        
+        views: function(id){ // add a views to the apartment
+            // console.log("CIAO HO CLICCATO");
+                return apartment;
+            });
+        } catch (error) {
+            console.error('ERRORE', error);
+        }
+    },
         updateUrlWithFilters(field){
             const query = Object.assign({}, this.filters);
             this.$router.push({ query });
         },
-        updateCoordinates(coordinates) {
-            this.filters.latitude = coordinates.lat;
-            this.filters.longitude = coordinates.lng;
-        },
         
-        views: function(id){ // add a views to the apartment
-            // console.log("CIAO HO CLICCATO");
+    updateCoordinates(coordinates) {
+        this.filters.latitude = coordinates.lat;
+        this.filters.longitude = coordinates.lng;
+    },
 
-            let data = {
-                ip: null,
-                apartment_id: id,
-            }
+    calculateDistance(lat1, lon1, lat2, lon2) {
+        const R = 6371; // Earth's radius in km
+        const dLat = this.degToRad(lat2 - lat1);
+        const dLon = this.degToRad(lon2 - lon1);
+        const a = 
+            Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+            Math.cos(this.degToRad(lat1)) * Math.cos(this.degToRad(lat2)) *
+            Math.sin(dLon / 2) * Math.sin(dLon / 2);
+        const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+        const distance = R * c; // distance in km
+        return distance;
+    },
+    // Function to convert degrees to radians
+    degToRad(deg) {
+        return deg * (Math.PI / 180);
+    },
+    views: function(id) {
+        let data = {
+            ip: null,
+            apartment_id: id,
+        };
 
-            axios.get('https://api.ipify.org?format=json')
-            .then((response) => {
-                data.ip = response.data.ip // take the ip
 
-                // add a view in the db
-                axios.post('http://127.0.0.1:8000/api/apartments/view',{
-                    apartment_id: data.apartment_id,
-                    ip: data.ip,
-                })
-            })
-            .catch ((error) => {
-                console.error('Errore nel recupero dell\'IP:', error);
-            });
-            
+        axios.get('https://api.ipify.org?format=json')
+        .then((response) => {
+            data.ip = response.data.ip; // Takes the IP address from the response
+
+            // Adds a view to the apartment
+            axios.post('http://127.0.0.1:8000/api/apartments/view', {
+                apartment_id: data.apartment_id,
+                ip: data.ip,
+            });         
         },
-        capitalizeFirstLetter(city) {
+
+        })
+        .catch((error) => {
+            console.error('Errore nel recupero dell\'IP:', error);
+        });
+    },
+            capitalizeFirstLetter(city) {
         if (!city) return '';
         city = city.toLowerCase(); // Converti tutto in minuscolo
         return city.charAt(0).toUpperCase() + city.slice(1); // Prima lettera maiuscola
         }
-    },
+},
+
     mounted() {
         this.$nextTick(() => {
-            const citySearched = this.$route.query.city; // salva la città cercata
+            const citySearched = this.$route.query.city; // Saves the city searched
             if (citySearched) {
+
                 this.citySearched = citySearched; // Salva la città nel data
                 this.filters.latitude = this.$route.query.latitude; // salva latitudine e longitudine
                 this.filters.longitude = this.$route.query.longitude;
-            }
-            this.cercaAppartamenti(); // carica gli appartamenti con le coordinate
 
+            }
+            this.cercaAppartamenti(); // Uploads the apartments
             let position = {
                 lat: this.filters.latitude,
                 lng: this.filters.longitude,
             };
 
             if (this.filters.latitude != null) {
-                // Aggiungi la mappa
+                // Add the map to the page
                 const map = tt.map({
-                    key: "9ndAiLQMA0GuE3FRyeJN3u42T2H4UMvU", // chiave API
-                    container: "map", // container della mappa
-                    center: [this.filters.longitude, this.filters.latitude], // Centra la mappa sui valori passati
-                    zoom: 14, // Zoom iniziale
+                    key: "9ndAiLQMA0GuE3FRyeJN3u42T2H4UMvU", // API's key
+                    container: "map", // Map's container
+                    center: [this.filters.longitude, this.filters.latitude], // 
+                    zoom: 14, // Initial zoom
                 });
 
                 setTimeout(() => {
-                    map.resize(); // Forza il resize della mappa
+                    map.resize(); // Resize the map after it's loaded
                     console.log("Mappa caricata correttamente"); // Test
                 }, 200);
 
                 // Crea il marker nella posizione specificata
                 const marker = new tt.Marker()
-                    .setLngLat([position.lng, position.lat]) // Usa lat e long dalla query
+                    .setLngLat([position.lng, position.lat]) // Uses the position saved
                     .setPopup(new tt.Popup({ offset: 5 }).setHTML(`
                         <h1>${citySearched}</h1>
                         <p>Latitudine: ${position.lat}, Longitudine: ${position.lng}</p>
-                    `)) // Popup personalizzato
+                    `)) // Popup personalized
                     .addTo(map);
 
-                // Sposta la mappa sulla posizione con flyTo
+                // Move the map to the position with flyTo
                 map.flyTo({
-                    center: [position.lng, position.lat], // Centra sulla posizione
-                    zoom: 14 // Livello di zoom
+                    center: [position.lng, position.lat], // Center on the position
+                    zoom: 14 
                 });
             }
         });
@@ -308,6 +346,7 @@ export default {
                 <RouterLink v-for="apartment in store.apartments" :key="apartment.id"
                 :to="{ name: 'SingleApartment', params: { slug: apartment.slug } }" @click="views(apartment.id)">
                 <li class="apartment-item" >
+
                         <img :src="'http://127.0.0.1:8000/storage/' + apartment.image " alt="apartment image">
                         <div class="overlay">
                             <h1>{{ apartment.name }}</h1>
@@ -339,6 +378,7 @@ export default {
                 <p>Effettua una nuova ricerca</p>
             </div>
         </section>
+
     </div>
 </template>
 
@@ -503,6 +543,7 @@ h1.city{
         display: block;
         border-radius: 24px;
         aspect-ratio: 1/1;
+
     }
 
     .overlay {
