@@ -389,6 +389,8 @@ a {
     img{
         height: 100%;
         display: block;
+        width: 100%;
+        object-fit: cover;
     }
 
     .overlay {
