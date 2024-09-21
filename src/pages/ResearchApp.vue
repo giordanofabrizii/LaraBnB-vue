@@ -224,10 +224,13 @@ export default {
     <div id="research-app">
         <aside>
             <section  class="side">
+                <div class="upper-srcbtn">
+                    <button class="search" id="search-btn" @click="cercaAppartamenti">Carica Appartamenti</button>
+                </div>
 
-                <MapApp :latitude="filters.latitude" :longitude="filters.longitude" @update-coordinates="updateCoordinates" />
-
-                <section class="dropdown-content">
+                    <MapApp :latitude="filters.latitude" :longitude="filters.longitude" @update-coordinates="updateCoordinates" class="map"/>
+                
+                    <section class="dropdown-content">
             
 
                     <!-- SURFACE SELECTOR -->
@@ -379,6 +382,10 @@ a {
     width: 100vw;
 }
 
+.map{
+    border-radius: 15px;
+}
+
 .side {
     max-width: 336px;
     margin: 0 auto 1rem;
@@ -425,10 +432,14 @@ a {
         -moz-appearance: textfield; /* Nascondi le frecce in Firefox */
     }
 
+    .upper-srcbtn{
+        margin: 0.2rem auto;
+    }
+
     button.search{
         padding: 1rem 2rem 1rem 2rem;
         width: 15rem;
-        margin: 2rem;
+        margin: 1rem auto;
         border: none;
         border-radius: 2rem;
         background-color: #2f408e;
