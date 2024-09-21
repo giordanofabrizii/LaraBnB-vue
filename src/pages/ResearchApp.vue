@@ -160,6 +160,11 @@ export default {
                 console.error('Errore nel recupero dell\'IP:', error);
             });
         },
+        resolveUrl(slug) {
+            // Usa Vue Router per risolvere il percorso
+            const url = this.$router.resolve({ name: 'SingleApartment', params: { slug } }).href;
+            return url;
+        },
     },
     mounted() {
         this.$nextTick(() => {
@@ -323,8 +328,8 @@ export default {
             <h1 v-if="citySearched != ''" class="city">{{formattedCityName}}: {{ store.apartments.length }} strutture trovate</h1>
             
             <ul class="apartment-list">
-                <RouterLink v-for="apartment in store.apartments" :key="apartment.id"
-                    :to="{ name: 'SingleApartment', params: { slug: apartment.slug } }" @click="views(apartment.id)">
+                <a v-for="apartment in store.apartments" :key="apartment.id"
+                :href="resolveUrl(apartment.slug)"  target="_blank" @click="views(apartment.id)">
                     <li class="apartment-item" >
                         <img :src="'http://127.0.0.1:8000/storage/' + apartment.image " alt="apartment image">
                         <div class="overlay">
@@ -349,7 +354,7 @@ export default {
                             </div>                     
                         </div>
                     </li>
-                </RouterLink>
+                </a>
             </ul>
         
             <div class="no-results" v-if="store.apartments.length === 0">
