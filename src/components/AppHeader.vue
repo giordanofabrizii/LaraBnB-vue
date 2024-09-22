@@ -16,8 +16,10 @@ export default{
             <router-link :to="{ name: 'home' }">
                 <img src="../assets/icons/logo-blu.png" alt="LaraBnb logo">
             </router-link>
-
-            <i :class="(store.darkMode == true) ? 'fa-solid fa-moon' : 'fa-solid fa-sun'" @click="(store.darkMode == true) ? store.darkMode = false : store.darkMode = true"></i>
+<div>
+    <a href="http://127.0.0.1:8000">Log In</a>
+    <i :class="(store.darkMode == true) ? 'fa-solid fa-moon' : 'fa-solid fa-sun'" @click="(store.darkMode == true) ? store.darkMode = false : store.darkMode = true"></i>
+</div>
         </div>
     </header>
 </template>
@@ -34,6 +36,11 @@ export default{
 
             img{
                 height: 3rem;
+            }
+
+            a{
+                color: black;
+                text-decoration: none;
             }
 
             i{
