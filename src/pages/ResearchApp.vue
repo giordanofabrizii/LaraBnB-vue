@@ -235,21 +235,12 @@ export default {
                 <p>Ricerca avanzata</p>
 
             </div>
-            <section class="side menu" :class="{ active: isMenuOpen }">
-
-                <button class="search" id="search-btn" @click="cercaAppartamenti">Carica Appartamenti</button>
-
-            <section  class="side">
+            <section  class="side menu" :class="{ active: isMenuOpen }">
                 <div class="upper-srcbtn">
                     <button class="search" id="search-btn" @click="cercaAppartamenti">Carica Appartamenti</button>
                 </div>
 
                     <MapApp :latitude="filters.latitude" :longitude="filters.longitude" @update-coordinates="updateCoordinates" class="map"/>
-                
-                    <section class="dropdown-content">
-        
-
-                <MapApp :latitude="filters.latitude" :longitude="filters.longitude" @update-coordinates="updateCoordinates" />
                 
                 <section class="filters-content">
                     <!-- SURFACE SELECTOR -->
@@ -347,7 +338,7 @@ export default {
             
         <section class="apartments">
             
-            <h1 v-if="citySearched != ''" class="city">{{formattedCityName}}: {{ store.apartments.length }} strutture trovate</h1>
+            <h1 v-if="citySearched != ''" class="city">{{ store.apartments.length }} strutture trovate</h1>
             
             <ul class="apartment-list">
                 <a v-for="apartment in store.apartments" :key="apartment.id"

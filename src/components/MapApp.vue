@@ -37,8 +37,6 @@ export default {
                     zoom: 14,
                 });
 
-                console.log(firstResult.position)
-
                 markers.forEach(marker => marker.remove()); // remove the old marker
 
                 markers.length = 0;
