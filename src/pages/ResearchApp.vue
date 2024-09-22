@@ -51,8 +51,7 @@ export default {
                 price: null,
                 services: [],
             },
-            // isSearchExectuted: false,
-
+            isMenuOpen: false,
         };
     },
     methods: {
@@ -160,6 +159,9 @@ export default {
                 console.error('Errore nel recupero dell\'IP:', error);
             });
         },
+        toggleMenu() {
+            this.isMenuOpen = !this.isMenuOpen;
+        },
     },
     mounted() {
         this.$nextTick(() => {
@@ -218,13 +220,22 @@ export default {
 <template>
     <div id="research-app">
         <aside>
-            <section  class="side">
+            <div id="menu-toggle" @click="toggleMenu">
+                <div class="menu-toggle">
+                    <span class="line"></span>
+                    <span class="line"></span>
+                    <span class="line"></span>
+                </div>                
+                <p>Ricerca avanzata</p>
+
+            </div>
+            <section class="side menu" :class="{ active: isMenuOpen }">
+
+                <button class="search" id="search-btn" @click="cercaAppartamenti">Carica Appartamenti</button>
 
                 <MapApp :latitude="filters.latitude" :longitude="filters.longitude" @update-coordinates="updateCoordinates" />
-
-                <section class="dropdown-content">
-            
-
+                
+                <section class="filters-content">
                     <!-- SURFACE SELECTOR -->
                     <!-- MIN SURFACE -->
                     <div class="wholeInput">
@@ -439,7 +450,7 @@ a {
         }
     }
 
-    .dropdown-content {
+    .filters-content {
         padding: 1rem;
         border-top: solid 1px rgb(214, 214, 214);
         border-bottom: solid 1px rgb(214, 214, 214);
@@ -724,4 +735,103 @@ a {
             transform: scale(20);
         }
         }
+
+.menu-toggle {
+    display: none;
+    flex-direction: column;
+    justify-content: space-between;
+    width: 30px;
+    height: 20px;
+    cursor: pointer;
+}
+
+.menu-toggle span.line {
+    display: block;
+    height: 3px;
+    width: 100%;
+    background-color: white;
+}
+
+#menu-toggle>p{
+    display: none;
+}
+        
+//MEDIA QUERIES
+
+/* Extra small devices (phones, 600px and down) */
+@media only screen and (max-width: 767px) {
+
+#research-app{
+    flex-direction: column;
+    padding: 1rem;
+}
+
+.side{
+    max-width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.menu {
+    display: none;
+    flex-direction: column;
+    width: 100%;
+}
+
+.menu.active {
+    display: flex;
+}
+.menu-toggle {
+    display: flex;
+}
+
+#menu-toggle{
+    display: flex;
+    flex-direction: row;
+    margin-bottom: 1rem;
+
+    p{
+        display: inline-block;
+        color: white;
+        margin-left: 1rem;
+    }
+}
+
+
+ul.apartment-list{
+    padding: 1rem;
+
+    a{
+        width: 95vw;
+
+        li{
+            flex-direction: column;
+        }
+    }
+}
+
+}
+
+ /* Medium devices (landscape tablets) */
+
+@media screen and (max-width: 991px) {
+
+#research-app{
+    padding: 1rem !important;
+}
+
+.apartment-list{
+    padding: 1rem;
+    
+    a{
+        width: 95vw;
+
+        li{
+            flex-direction: column;
+        }
+    }
+}
+}
+
 </style>
