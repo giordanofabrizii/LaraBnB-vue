@@ -545,7 +545,7 @@ a {
     }
 
     img{
-        height: 20rem;
+        max-height: 20rem;
         display: block;
         border-radius: 24px;
         aspect-ratio: 1 / 1;
