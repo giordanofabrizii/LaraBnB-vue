@@ -237,7 +237,7 @@ export default {
             </div>
             <section  class="side menu" :class="{ active: isMenuOpen }">
                 <div class="upper-srcbtn">
-                    <button class="search" id="search-btn" @click="cercaAppartamenti">Carica Appartamenti</button>
+                    <button class="search" id="search-btn" @click="cercaAppartamenti">Applica i filtri</button>
                 </div>
 
                     <MapApp :latitude="filters.latitude" :longitude="filters.longitude" @update-coordinates="updateCoordinates" class="map"/>
@@ -331,7 +331,7 @@ export default {
                     </div>
                 </div>
 
-                <button class="search" id="search-btn" @click="cercaAppartamenti">Carica Appartamenti</button>
+                <button class="search" id="search-btn" @click="cercaAppartamenti">Applica i filtri</button>
                 
             </section>
         </aside>
