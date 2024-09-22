@@ -234,7 +234,7 @@ div.container{
         margin-top: 1rem;
         height: 150px;
         width: 300px;
-        
+        margin-bottom: 3rem;
     }
 }
 .message{
