@@ -1,3 +1,45 @@
 main{
     background-color: rgb(58, 58, 58);
 }
+
+header{
+    background-color: rgb(32, 32, 32);
+}
+
+.apartment{
+    background-color: rgb(58, 58, 58) !important;
+    color: white;
+
+}
+
+.message section{
+    background-color: rgb(26, 26, 26) !important;
+    color: #528fff;
+
+    #success{
+        .fa-check{
+            color: white;
+        }
+
+        p{
+            color: white;
+        }
+    }
+}
+
+#research-app{
+    .decrement,
+    .increment{
+        background-color: transparent;
+
+        &:hover{
+            background-color: rgba(255,255,255,0.2);
+        }
+    }
+
+    .wholeInput{
+        input{
+            background-color: transparent;
+        }
+    }
+}

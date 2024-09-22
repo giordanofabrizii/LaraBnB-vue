@@ -792,9 +792,6 @@ a {
         color: white !important;
     }
 }
-
-
-
 //MEDIA QUERIES
 
 /* Extra small devices (phones, 600px and down) */

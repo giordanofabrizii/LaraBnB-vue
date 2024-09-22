@@ -165,7 +165,13 @@ a{
 }
 
 .container.dark .jumbotron{
-    background-image: linear-gradient(white, rgb(58, 58, 58));
+    background-image: linear-gradient(rgb(32, 32, 32), rgb(58, 58, 58));
+
+    .jumbotron-content{
+        h1,p{
+            color: white;
+        }
+    }
 
     p,
     h1{

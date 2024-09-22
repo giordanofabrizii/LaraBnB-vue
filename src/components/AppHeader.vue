@@ -54,4 +54,13 @@ export default{
             }
         }
     }
+
+    .container.dark {
+        header{
+            a,
+            i{
+                color: white;
+            }
+        }
+    }
 </style>

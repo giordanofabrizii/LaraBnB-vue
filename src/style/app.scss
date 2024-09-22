@@ -14,6 +14,10 @@ body{
     position: relative;
 }
 
-#app.dark{
+.container.dark{
     @import './dark.scss';
+}
+
+.mapboxgl-ctrl-bottom-right{
+    display: none !important;
 }
