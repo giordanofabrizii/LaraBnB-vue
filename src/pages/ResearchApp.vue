@@ -755,7 +755,30 @@ a {
 #menu-toggle>p{
     display: none;
 }
-        
+
+.dark{
+    .side{
+        background-color: #3a3a3a;
+        color: white;
+        box-shadow: 0 0 6px 2px rgb(59, 141, 168);
+    }
+
+    li.apartment-item,
+    button#search-btn{
+        box-shadow: 0 0 6px 2px rgb(59, 141, 168);
+    }
+
+    span.checkbox__symbol{
+        border-color: rgb(214, 214, 214);
+    }
+
+    svg.icon-checkbox{
+        color: white !important;
+    }
+}
+
+
+
 //MEDIA QUERIES
 
 /* Extra small devices (phones, 600px and down) */
