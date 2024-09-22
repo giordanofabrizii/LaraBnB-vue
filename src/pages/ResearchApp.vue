@@ -351,7 +351,8 @@ export default {
                                     <strong> &euro; {{ apartment.price}}</strong>
                                     <p>Include tasse e costi</p>
                                 </div>
-                            </div>                     
+                            </div>
+                            <p>Distanza: {{ (Math.round((calculateDistance(apartment.latitude, apartment.longitude, filters.latitude, filters.longitude)) * 100) / 100).toFixed(2)  }} km</p>       
                         </div>
                     </li>
                 </a>
