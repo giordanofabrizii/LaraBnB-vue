@@ -162,6 +162,11 @@ export default {
         toggleMenu() {
             this.isMenuOpen = !this.isMenuOpen;
         },
+        resolveUrl(slug) {
+            // Usa Vue Router per risolvere il percorso
+            const url = this.$router.resolve({ name: 'SingleApartment', params: { slug } }).href;
+            return url;
+        },
     },
     mounted() {
         this.$nextTick(() => {
@@ -220,6 +225,7 @@ export default {
 <template>
     <div id="research-app">
         <aside>
+
             <div id="menu-toggle" @click="toggleMenu">
                 <div class="menu-toggle">
                     <span class="line"></span>
@@ -232,6 +238,16 @@ export default {
             <section class="side menu" :class="{ active: isMenuOpen }">
 
                 <button class="search" id="search-btn" @click="cercaAppartamenti">Carica Appartamenti</button>
+
+            <section  class="side">
+                <div class="upper-srcbtn">
+                    <button class="search" id="search-btn" @click="cercaAppartamenti">Carica Appartamenti</button>
+                </div>
+
+                    <MapApp :latitude="filters.latitude" :longitude="filters.longitude" @update-coordinates="updateCoordinates" class="map"/>
+                
+                    <section class="dropdown-content">
+        
 
                 <MapApp :latitude="filters.latitude" :longitude="filters.longitude" @update-coordinates="updateCoordinates" />
                 
@@ -334,8 +350,8 @@ export default {
             <h1 v-if="citySearched != ''" class="city">{{formattedCityName}}: {{ store.apartments.length }} strutture trovate</h1>
             
             <ul class="apartment-list">
-                <RouterLink v-for="apartment in store.apartments" :key="apartment.id"
-                    :to="{ name: 'SingleApartment', params: { slug: apartment.slug } }" @click="views(apartment.id)">
+                <a v-for="apartment in store.apartments" :key="apartment.id"
+                :href="resolveUrl(apartment.slug)"  target="_blank" @click="views(apartment.id)">
                     <li class="apartment-item" >
                         <img :src="'http://127.0.0.1:8000/storage/' + apartment.image " alt="apartment image">
                         <div class="overlay">
@@ -357,10 +373,11 @@ export default {
                                     <strong> &euro; {{ apartment.price}}</strong>
                                     <p>Include tasse e costi</p>
                                 </div>
-                            </div>                     
+                            </div>
+                            <p>Distanza: {{ (Math.round((calculateDistance(apartment.latitude, apartment.longitude, filters.latitude, filters.longitude)) * 100) / 100).toFixed(2)  }} km</p>       
                         </div>
                     </li>
-                </RouterLink>
+                </a>
             </ul>
         
             <div class="no-results" v-if="store.apartments.length === 0">
@@ -383,6 +400,10 @@ a {
     display: flex;
     padding: 2rem;
     width: 100vw;
+}
+
+.map{
+    border-radius: 15px;
 }
 
 .side {
@@ -431,10 +452,14 @@ a {
         -moz-appearance: textfield; /* Nascondi le frecce in Firefox */
     }
 
+    .upper-srcbtn{
+        margin: 0.2rem auto;
+    }
+
     button.search{
         padding: 1rem 2rem 1rem 2rem;
         width: 15rem;
-        margin: 2rem;
+        margin: 1rem auto;
         border: none;
         border-radius: 2rem;
         background-color: #2f408e;
